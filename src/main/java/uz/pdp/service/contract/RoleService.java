@@ -1,9 +1,9 @@
 package uz.pdp.service.contract;
 
-import ai.ecma.codingbat.entity.enums.PermissionEnum;
-import ai.ecma.codingbat.payload.AddRoleDTO;
-import ai.ecma.codingbat.payload.ApiResult;
-import ai.ecma.codingbat.payload.RoleDTO;
+import uz.pdp.entity.PermissionEnum;
+import uz.pdp.payload.AddRoleDTO;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.RoleDTO;
 
 import java.util.List;
 

@@ -1,9 +1,5 @@
 package uz.pdp.controller.implementation;
 
-import ai.ecma.codingbat.payload.ApiResult;
-import ai.ecma.codingbat.payload.SignDTO;
-import ai.ecma.codingbat.payload.TokenDTO;
-import ai.ecma.codingbat.service.contract.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +9,7 @@ import uz.pdp.controller.cotract.AuthController;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
+import uz.pdp.service.contract.AuthService;
 
 import javax.validation.Valid;
 
@@ -28,7 +25,7 @@ public class AuthControllerImpl implements AuthController {
     }
 
     public ApiResult<?> verificationPhoneNumber(@PathVariable String phoneNumber) {
-        return authService.verificationEmail(phoneNumber);
+        return authService.verificationPhoneNumber(phoneNumber);
     }
 
     @Override
