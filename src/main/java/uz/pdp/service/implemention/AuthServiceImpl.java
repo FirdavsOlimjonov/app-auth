@@ -85,12 +85,12 @@ public class AuthServiceImpl implements AuthService {
 
         if (userRepository.existsByPhoneNumber(signDTO.getPhoneNumber()))
             throw RestException.restThrow(
-                    MessageLang.getMessageSource("EMAIL_ALREADY_EXIST"),
+                    "EMAIL_ALREADY_EXIST",
                     HttpStatus.CONFLICT);
 
 
         User user = new User(
-                signDTO.getEmail(),
+                signDTO.getPhoneNumber(),
                 passwordEncoder.encode(signDTO.getPassword()));
 
         user.setRole(roleRepository.findBy(Roles.USER).get());
@@ -209,9 +209,9 @@ public class AuthServiceImpl implements AuthService {
 
         // Setting up necessary details
         mailMessage.setFrom(sender);
-        mailMessage.setTo(user.getEmail());
+        mailMessage.setTo(user.getPhoneNumber());
         mailMessage.setSubject("");
-        mailMessage.setText(MessageLang.getMessageSource("CLICK_LINK") + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
+        mailMessage.setText("CLICK_LINK" + API + API_PORT + "/api/auth/verification-email/" + user.getPhoneNumber());
 
         // Sending the mail
         javaMailSender.send(mailMessage);
