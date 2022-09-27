@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.pdp.entity.PermissionEnum;
 import uz.pdp.entity.Role;
+import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
@@ -20,6 +22,10 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+
+    private final ApiResult<PermissionEnum[]> apiResultAllPermissions =
+            ApiResult.successResponse(PermissionEnum.values());
+
 
     @Override
     public ApiResult<RoleDTO> add(AddRoleDTO addRoleDTO) {
@@ -52,7 +58,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ApiResult<PermissionEnum[]> getPermissions() {
-        return ApiResult.successResponse(PermissionEnum.values());
+        return apiResultAllPermissions;
     }
 
     private List<RoleDTO> mapLanguagesToLanguageDTOList(List<Role> roles) {
