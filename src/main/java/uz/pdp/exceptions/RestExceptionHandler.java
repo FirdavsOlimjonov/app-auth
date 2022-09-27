@@ -1,7 +1,5 @@
 package uz.pdp.exceptions;
 
-import ai.ecma.codingbat.payload.ApiResult;
-import ai.ecma.codingbat.payload.ErrorData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -13,6 +11,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.ErrorData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = RestException.class)
     public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(RestException ex) {
-        log.error("Exception: ",ex);
+        log.error("Exception: ", ex);
         ApiResult<List<ErrorData>> result =
                 ApiResult.failResponse(ex.getMessage(),
                         ex.getStatus().value());
@@ -75,15 +75,16 @@ public class RestExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(Exception ex) {
         System.out.println(Thread.currentThread().getName());
-        log.error("Exception: ",ex);
+        log.error("Exception: ", ex);
         ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
                 ex.getMessage(),
                 HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(apiResult, HttpStatus.CONFLICT);
     }
+
     @ExceptionHandler(value = AccountStatusException.class)
     public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(AccountStatusException ex) {
-        log.error("Exception: ",ex);
+        log.error("Exception: ", ex);
         ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
                 ex.getMessage(),
                 HttpStatus.UNAUTHORIZED.value());
