@@ -104,15 +104,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<?> verificationEmail(String email) {
         User user = userRepository.findByPhoneNumber(email)
-                .orElseThrow(() -> RestException.restThrow(MessageLang.getMessageSource("EMAIL_NOT_EXIST"), HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> RestException.restThrow("EMAIL_NOT_EXIST", HttpStatus.NOT_FOUND));
 
         if (user.isEnabled()) {
-            return ApiResult.successResponse(MessageLang.getMessageSource("ALREADY_VERIFIED"));
+            return ApiResult.successResponse("ALREADY_VERIFIED");
         }
 
         user.setEnabled(true);
         userRepository.save(user);
-        return ApiResult.successResponse(MessageLang.getMessageSource("SUCCESSFULLY_VERIFIED"));
+        return ApiResult.successResponse("SUCCESSFULLY_VERIFIED");
     }
 
 
@@ -121,14 +121,14 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        signDTO.getEmail(),
+                        signDTO.getPhoneNumber(),
                         signDTO.getPassword()
                 ));
 
         User user = (User) authentication.getPrincipal();
 
-        String accessToken = generateToken(user.getEmail(), true);
-        String refreshToken = generateToken(user.getEmail(), false);
+        String accessToken = generateToken(user.getPhoneNumber(), true);
+        String refreshToken = generateToken(user.getPhoneNumber(), false);
 
 
         TokenDTO tokenDTO = TokenDTO
@@ -138,7 +138,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         return ApiResult.successResponse(
-                MessageLang.getMessageSource("SUCCESSFULLY_TOKEN_GENERATED"),
+                "SUCCESSFULLY_TOKEN_GENERATED",
                 tokenDTO);
     }
 
