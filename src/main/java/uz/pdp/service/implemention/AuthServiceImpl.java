@@ -26,6 +26,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.SignDTO;
+import uz.pdp.repository.RoleRepository;
+import uz.pdp.repository.UserRepository;
 import uz.pdp.service.contract.AuthService;
 
 import java.util.Date;
@@ -78,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
-                .findByPh(username)
+                .findByPhoneNumber(username)
                 .orElseThrow(
                         () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
 
@@ -88,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public ApiResult<Boolean> signUp(SignDTO signDTO) {
 
-        if (userRepository.existsByEmail(signDTO.getEmail()))
+        if (userRepository.existsByEm(signDTO.getEmail()))
             throw RestException.restThrow(
                     MessageLang.getMessageSource("EMAIL_ALREADY_EXIST"),
                     HttpStatus.CONFLICT);

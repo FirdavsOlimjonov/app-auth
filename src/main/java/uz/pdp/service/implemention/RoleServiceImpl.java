@@ -1,17 +1,16 @@
 package uz.pdp.service.implemention;
 
-import ai.ecma.codingbat.entity.Role;
-import ai.ecma.codingbat.entity.enums.PermissionEnum;
-import ai.ecma.codingbat.exceptions.RestException;
-import ai.ecma.codingbat.payload.AddRoleDTO;
-import ai.ecma.codingbat.payload.ApiResult;
-import ai.ecma.codingbat.payload.RoleDTO;
-import ai.ecma.codingbat.repository.RoleRepository;
-import ai.ecma.codingbat.service.contract.RoleService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.pdp.entity.Role;
+import uz.pdp.payload.AddRoleDTO;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.RoleDTO;
+import uz.pdp.repository.RoleRepository;
+import uz.pdp.service.contract.RoleService;
 
 import java.util.List;
 import java.util.stream.Collectors;
