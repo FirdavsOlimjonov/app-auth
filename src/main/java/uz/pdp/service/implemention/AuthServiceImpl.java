@@ -88,12 +88,12 @@ public class AuthServiceImpl implements AuthService {
 
         if (userRepository.existsByPhoneNumber(signDTO.getPhoneNumber()))
             throw RestException.restThrow(
-                    MessageLang.getMessageSource("EMAIL_ALREADY_EXIST"),
+                    "EMAIL_ALREADY_EXIST",
                     HttpStatus.CONFLICT);
 
 
         User user = new User(
-                signDTO.getEmail(),
+                signDTO.getPhoneNumber(),
                 passwordEncoder.encode(signDTO.getPassword()));
 
         user.setRole(roleRepository.findBy(Roles.USER).get());
@@ -107,10 +107,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<?> verificationEmail(String email) {
         User user = userRepository.findByPhoneNumber(email)
-                .orElseThrow(() -> RestException.restThrow(MessageLang.getMessageSource("EMAIL_NOT_EXIST"), HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> RestException.restThrow("EMAIL_NOT_EXIST", HttpStatus.NOT_FOUND));
 
         if (user.isEnabled()) {
-            return ApiResult.successResponse(MessageLang.getMessageSource("ALREADY_VERIFIED"));
+            return ApiResult.successResponse("ALREADY_VERIFIED");
         }
 
         user.setEnabled(true);
@@ -124,14 +124,14 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        signDTO.getEmail(),
+                        signDTO.getPhoneNumber(),
                         signDTO.getPassword()
                 ));
 
         User user = (User) authentication.getPrincipal();
 
-        String accessToken = generateToken(user.getEmail(), true);
-        String refreshToken = generateToken(user.getEmail(), false);
+        String accessToken = generateToken(user.getPhoneNumber(), true);
+        String refreshToken = generateToken(user.getPhoneNumber(), false);
 
 
         TokenDTO tokenDTO = TokenDTO
