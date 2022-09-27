@@ -1,5 +1,8 @@
 package uz.pdp.service.implemention;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -138,7 +141,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         return ApiResult.successResponse(
-                MessageLang.getMessageSource("SUCCESSFULLY_TOKEN_GENERATED"),
+                "SUCCESSFULLY_TOKEN_GENERATED",
                 tokenDTO);
     }
 
@@ -209,9 +212,9 @@ public class AuthServiceImpl implements AuthService {
 
         // Setting up necessary details
         mailMessage.setFrom(sender);
-        mailMessage.setTo(user.getEmail());
+        mailMessage.setTo(user.getPhoneNumber());
         mailMessage.setSubject("");
-        mailMessage.setText(MessageLang.getMessageSource("CLICK_LINK") + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
+        mailMessage.setText("CLICK_LINK" + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
 
         // Sending the mail
         javaMailSender.send(mailMessage);
