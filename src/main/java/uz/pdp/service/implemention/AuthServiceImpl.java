@@ -1,18 +1,5 @@
 package uz.pdp.service.implemention;
 
-import ai.ecma.codingbat.entity.User;
-import ai.ecma.codingbat.entity.enums.RoleEnum;
-import ai.ecma.codingbat.exceptions.RestException;
-import ai.ecma.codingbat.payload.ApiResult;
-import ai.ecma.codingbat.payload.SignDTO;
-import ai.ecma.codingbat.payload.TokenDTO;
-import ai.ecma.codingbat.repository.RoleRepository;
-import ai.ecma.codingbat.repository.UserRepository;
-import ai.ecma.codingbat.service.contract.AuthService;
-import ai.ecma.codingbat.util.MessageLang;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -26,9 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.pdp.entity.Roles;
+import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
+import uz.pdp.payload.TokenDTO;
 import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
 import uz.pdp.service.contract.AuthService;
@@ -93,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public ApiResult<Boolean> signUp(SignDTO signDTO) {
 
-        if (userRepository.existsByEm(signDTO.getEmail()))
+        if (userRepository.existsByPhoneNumber(signDTO.getPhoneNumber()))
             throw RestException.restThrow(
                     MessageLang.getMessageSource("EMAIL_ALREADY_EXIST"),
                     HttpStatus.CONFLICT);
@@ -103,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
                 signDTO.getEmail(),
                 passwordEncoder.encode(signDTO.getPassword()));
 
-        user.setRole(roleRepository.findByName(RoleEnum.ROLE_USER.name()).get());
+        user.setRole(roleRepository.findBy(Roles.USER).get());
         CompletableFuture.runAsync(() -> sendVerificationCodeToEmail(user));
 
         userRepository.save(user);
@@ -113,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ApiResult<?> verificationEmail(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByPhoneNumber(email)
                 .orElseThrow(() -> RestException.restThrow(MessageLang.getMessageSource("EMAIL_NOT_EXIST"), HttpStatus.NOT_FOUND));
 
         if (user.isEnabled()) {
@@ -171,14 +161,14 @@ public class AuthServiceImpl implements AuthService {
                         .parseClaimsJws(refreshToken)
                         .getBody()
                         .getSubject();
-                User user = userRepository.findByEmail(email).orElseThrow(() ->
-                        RestException.restThrow(MessageLang.getMessageSource("EMAIL_NOT_EXIST"), HttpStatus.NOT_FOUND));
+                User user = userRepository.findByPhoneNumber(email).orElseThrow(() ->
+                        RestException.restThrow("EMAIL_NOT_EXIST", HttpStatus.NOT_FOUND));
 
                 if (!user.isEnabled()
                         || !user.isAccountNonExpired()
                         || !user.isAccountNonLocked()
                         || !user.isCredentialsNonExpired())
-                    throw RestException.restThrow(MessageLang.getMessageSource("USER_PERMISSION_RESTRICTION"), HttpStatus.UNAUTHORIZED);
+                    throw RestException.restThrow("USER_PERMISSION_RESTRICTION", HttpStatus.UNAUTHORIZED);
 
                 String newAccessToken = generateToken(email, true);
                 String newRefreshToken = generateToken(email, false);
@@ -188,13 +178,13 @@ public class AuthServiceImpl implements AuthService {
                         .build();
                 return ApiResult.successResponse(tokenDTO);
             } catch (Exception e) {
-                throw RestException.restThrow(MessageLang.getMessageSource("REFRESH_TOKEN_EXPIRED"), HttpStatus.UNAUTHORIZED);
+                throw RestException.restThrow("REFRESH_TOKEN_EXPIRED", HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception ex) {
-            throw RestException.restThrow(MessageLang.getMessageSource("WRONG_ACCESS_TOKEN"), HttpStatus.UNAUTHORIZED);
+            throw RestException.restThrow("WRONG_ACCESS_TOKEN", HttpStatus.UNAUTHORIZED);
         }
 
-        throw RestException.restThrow(MessageLang.getMessageSource("ACCESS_TOKEN_NOT_EXPIRED"), HttpStatus.UNAUTHORIZED);
+        throw RestException.restThrow("ACCESS_TOKEN_NOT_EXPIRED", HttpStatus.UNAUTHORIZED);
     }
 
     public String generateToken(String email, boolean accessToken) {
