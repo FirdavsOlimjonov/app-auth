@@ -30,9 +30,6 @@ public class Role {
     @Enumerated(value = EnumType.STRING)
     private Set<PermissionEnum> permissions;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    private List<User> users;
-
     public Role(String name) {
         this.name = name;
     }
