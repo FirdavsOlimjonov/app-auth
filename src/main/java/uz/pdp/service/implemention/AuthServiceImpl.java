@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(
                 signDTO.getPhoneNumber(),
                 passwordEncoder.encode(signDTO.getPassword()));
-
+//
         user.setRole(roleRepository.findBy(Roles.USER).get());
         CompletableFuture.runAsync(() -> sendVerificationCodeToEmail(user));
 
