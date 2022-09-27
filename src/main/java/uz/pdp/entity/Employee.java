@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,7 +23,6 @@ public class Employee implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
-
 
     @Override
     public String getPassword() {
