@@ -93,7 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             for (Employee employee1 : all) {
                 if (employee1.getUser().getId().equals(employee.getUser().getId())) {
-                    if (employee1.getUser().getUsername().equals(employee.getUsername())) {
+                    if (employee1.getUser().getPhoneNumber().equals(employee.getUser().getPhoneNumber())) {
                         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
                     }
 
