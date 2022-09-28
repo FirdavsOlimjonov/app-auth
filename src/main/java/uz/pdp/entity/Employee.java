@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 @Entity
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-public class Employee{
+public class Employee implements Serializable {
 
     @Id
     @OneToOne
