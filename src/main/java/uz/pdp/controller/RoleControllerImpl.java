@@ -30,6 +30,11 @@ public class RoleControllerImpl implements RoleController {
     }
 
     @Override
+    public ApiResult<RoleDTO> getRole(Integer id) {
+        return roleService.getRole(id);
+    }
+
+    @Override
     public ApiResult<List<RoleDTO>> getRoles() {
         return roleService.getRoles();
     }

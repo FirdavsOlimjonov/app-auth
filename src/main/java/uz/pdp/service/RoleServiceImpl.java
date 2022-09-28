@@ -56,6 +56,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public ApiResult<RoleDTO> getRole(Integer id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> RestException.restThrow(
+                        "NO_SUCH_ROLE", HttpStatus.NOT_FOUND));
+
+        return ApiResult.successResponse(new RoleDTO(role));
+    }
+
+    @Override
     public ApiResult<PermissionEnum[]> getPermissions() {
         return apiResultAllPermissions;
     }

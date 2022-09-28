@@ -16,4 +16,6 @@ public interface RoleService {
     ApiResult<List<RoleDTO>> getRoles();
 
     ApiResult<PermissionEnum[]> getPermissions();
+
+    ApiResult<RoleDTO> getRole(Integer id);
 }
