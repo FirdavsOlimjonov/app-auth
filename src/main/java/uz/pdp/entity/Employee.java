@@ -17,6 +17,7 @@ import java.util.Collection;
 @DynamicUpdate///
 public class Employee implements UserDetails {
 
+    //
     @Id
     @OneToOne
     private User user;
@@ -58,4 +59,5 @@ public class Employee implements UserDetails {
     public String getUsername() {
         return this.user.getPhoneNumber();
     }
+
 }
