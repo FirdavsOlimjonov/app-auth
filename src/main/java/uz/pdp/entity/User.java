@@ -18,7 +18,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -56,13 +56,13 @@ public class User implements UserDetails {
         enabled = false;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Roles.USER.getPermissions();
-    }
-
-    @Override
-    public String getUsername() {
-        return this.phoneNumber;
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Roles.USER.getPermissions();
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return this.phoneNumber;
+//    }
 }

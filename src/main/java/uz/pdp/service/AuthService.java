@@ -6,7 +6,7 @@ import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
 
 
-public interface AuthService extends UserDetailsService {
+public interface AuthService {      //extends UserDetailsService
     ApiResult<Boolean> signUp(SignDTO signDTO);
 
     ApiResult<?> verificationPhoneNumber(String email);

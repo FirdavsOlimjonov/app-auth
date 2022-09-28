@@ -70,14 +70,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
-                .findByPhoneNumber(username)
-                .orElseThrow(
-                        () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
-
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        return userRepository
+//                .findByPhoneNumber(username)
+//                .orElseThrow(
+//                        () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
+//
+//    }
 
     @Override
     @Transactional
