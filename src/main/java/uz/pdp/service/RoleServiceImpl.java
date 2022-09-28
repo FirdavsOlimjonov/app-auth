@@ -25,17 +25,12 @@ public class RoleServiceImpl implements RoleService {
     private final ApiResult<PermissionEnum[]> apiResultAllPermissions =
             ApiResult.successResponse(PermissionEnum.values());
 
-
     @Override
     public ApiResult<RoleDTO> add(AddRoleDTO addRoleDTO) {
-        if (roleRepository.exists(Example.of(new Role(addRoleDTO.getName()))))
+        if (roleRepository.existsByName(addRoleDTO.getName()))
             throw RestException.restThrow("Such role already exists", HttpStatus.CONFLICT);
 
-        Role role = new Role(
-                addRoleDTO.getName(),
-                addRoleDTO.getDescription(),
-                addRoleDTO.getPermissions());
-
+        Role role = addRoleDTO.mapToRole();
         roleRepository.save(role);
 
         return ApiResult.successResponse(mapRoleToRoleDTO(role));
