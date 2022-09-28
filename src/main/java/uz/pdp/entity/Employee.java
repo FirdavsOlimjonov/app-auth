@@ -14,14 +14,13 @@ import java.util.Collection;
 @Getter
 @Setter
 @NoArgsConstructor
-@DynamicUpdate///
+@DynamicUpdate
 public class Employee implements UserDetails {
 
-    //
     @Id
     @OneToOne
     private User user;
-    //salom
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 

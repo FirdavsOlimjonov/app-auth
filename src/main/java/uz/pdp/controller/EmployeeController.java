@@ -7,6 +7,7 @@ import uz.pdp.payload.EmployeeDTO;
 
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RequestMapping("/employee")
@@ -16,16 +17,16 @@ public interface EmployeeController {
     ResponseEntity<List<EmployeeDTO>> getAll();
 
     @GetMapping("/getOne/{id}")
-    ResponseEntity<EmployeeDTO> getOne(@PathVariable Integer id);
+    ResponseEntity<EmployeeDTO> getOne(@PathVariable UUID id);
 
     @PostMapping("/add")
     ResponseEntity<Boolean> add(@RequestBody Employee employee);
 
     @PutMapping("/edit/{id}")
-    ResponseEntity<Boolean> edit(@RequestBody EmployeeDTO employeeDTO, @PathVariable Integer id);
+    ResponseEntity<Boolean> edit(@RequestBody Employee employee, @PathVariable UUID id);
 
     @DeleteMapping("/delete/{id}")
-    ResponseEntity<Boolean> delete(@PathVariable Integer id);
+    ResponseEntity<Boolean> delete(@PathVariable UUID id);
 
 
 }
