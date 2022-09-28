@@ -1,8 +1,8 @@
-package uz.pdp.appauth.employee.service;
+package uz.pdp.service;
 
 import org.springframework.http.ResponseEntity;
-import uz.pdp.appauth.employee.entity.Employee;
-import uz.pdp.appauth.employee.payload.EmployeeDTO;
+import uz.pdp.entity.Employee;
+import uz.pdp.payload.EmployeeDTO;
 
 import java.util.List;
 

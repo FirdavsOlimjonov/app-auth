@@ -1,4 +1,4 @@
-package uz.pdp.appauth.employee.payload;
+package uz.pdp.payload;
 
 import lombok.Data;
 

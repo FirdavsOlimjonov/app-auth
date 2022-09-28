@@ -1,4 +1,4 @@
-package uz.pdp.service.implemention;
+package uz.pdp.service;
 
 
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import uz.pdp.payload.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
 import uz.pdp.repository.RoleRepository;
-import uz.pdp.service.contract.RoleService;
+import uz.pdp.service.RoleService;
 
 import java.util.List;
 import java.util.stream.Collectors;

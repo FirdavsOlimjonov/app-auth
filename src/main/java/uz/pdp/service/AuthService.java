@@ -1,4 +1,4 @@
-package uz.pdp.service.contract;
+package uz.pdp.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import uz.pdp.payload.ApiResult;

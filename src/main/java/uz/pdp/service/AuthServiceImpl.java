@@ -1,4 +1,4 @@
-package uz.pdp.service.implemention;
+package uz.pdp.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +22,7 @@ import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
 import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
-import uz.pdp.service.contract.AuthService;
+import uz.pdp.service.AuthService;
 
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;

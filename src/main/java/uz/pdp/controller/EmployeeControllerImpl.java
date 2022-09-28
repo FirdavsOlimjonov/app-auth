@@ -1,17 +1,17 @@
-package uz.pdp.appauth.employee.controller;
+package uz.pdp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import uz.pdp.appauth.employee.entity.Employee;
-import uz.pdp.appauth.employee.payload.EmployeeDTO;
-import uz.pdp.appauth.employee.service.EmployeeService;
+import uz.pdp.entity.Employee;
+import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.service.EmployeeService;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class EmployeeControllerImpl implements EmployeeController{
+public class EmployeeControllerImpl implements EmployeeController {
 
     private final EmployeeService employeeService;
 

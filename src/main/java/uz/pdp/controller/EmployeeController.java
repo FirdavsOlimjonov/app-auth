@@ -1,9 +1,9 @@
-package uz.pdp.appauth.employee.controller;
+package uz.pdp.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.pdp.appauth.employee.entity.Employee;
-import uz.pdp.appauth.employee.payload.EmployeeDTO;
+import uz.pdp.entity.Employee;
+import uz.pdp.payload.EmployeeDTO;
 
 import java.util.List;
 
