@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.pdp.entity.Roles;
 import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
@@ -95,9 +93,8 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(
                 signDTO.getPhoneNumber(),
                 passwordEncoder.encode(signDTO.getPassword()));
-//
-        user.setRole(roleRepository.findBy(Roles.USER).get());
-        CompletableFuture.runAsync(() -> sendVerificationCodeToEmail(user));
+
+        CompletableFuture.runAsync(() -> sendVerificationCodeToPhoneNumber(user));
 
         userRepository.save(user);
         return ApiResult.successResponse();
@@ -105,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ApiResult<?> verificationEmail(String email) {
+    public ApiResult<?> verificationPhoneNumber(String email) {
         User user = userRepository.findByPhoneNumber(email)
                 .orElseThrow(() -> RestException.restThrow("EMAIL_NOT_EXIST", HttpStatus.NOT_FOUND));
 
@@ -115,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setEnabled(true);
         userRepository.save(user);
-        return ApiResult.successResponse(MessageLang.getMessageSource("SUCCESSFULLY_VERIFIED"));
+        return ApiResult.successResponse("SUCCESSFULLY_VERIFIED");
     }
 
 
@@ -206,18 +203,21 @@ public class AuthServiceImpl implements AuthService {
                 .compact();
     }
 
-    private void sendVerificationCodeToEmail(User user) {
-        SimpleMailMessage mailMessage
-                = new SimpleMailMessage();
-
-        // Setting up necessary details
-        mailMessage.setFrom(sender);
-        mailMessage.setTo(user.getPhoneNumber());
-        mailMessage.setSubject("");
-        mailMessage.setText("CLICK_LINK" + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
-
-        // Sending the mail
-        javaMailSender.send(mailMessage);
+    /**
+     * Send Verification Code To PhoneNumber
+     */
+    private void sendVerificationCodeToPhoneNumber(User user) {
+//        SimpleMailMessage mailMessage
+//                = new SimpleMailMessage();
+//
+//        // Setting up necessary details
+//        mailMessage.setFrom(sender);
+//        mailMessage.setTo(user.getPhoneNumber());
+//        mailMessage.setSubject("");
+//        mailMessage.setText("CLICK_LINK" + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
+//
+//        // Sending the mail
+//        javaMailSender.send(mailMessage);
     }
 
 }
