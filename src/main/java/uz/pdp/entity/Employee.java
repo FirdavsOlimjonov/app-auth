@@ -21,7 +21,7 @@ public class Employee implements UserDetails {
     @Id
     @OneToOne
     private User user;
-
+    //salom
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 
