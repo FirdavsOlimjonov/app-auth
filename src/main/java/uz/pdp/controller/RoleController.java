@@ -1,6 +1,5 @@
 package uz.pdp.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.entity.PermissionEnum;
 import uz.pdp.payload.AddRoleDTO;
@@ -12,7 +11,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RequestMapping(path = RoleController.ROLE_BASE_PATH)
-@PreAuthorize(value = "hasAnyAuthority('EDIT_ROLE')")
 public interface RoleController {
     String ROLE_BASE_PATH = "/api/role";
 
@@ -21,7 +19,8 @@ public interface RoleController {
 
 
     @PutMapping("/{id}")
-    ApiResult<Boolean> edit(AddRoleDTO addRoleDTO,Integer id);
+    ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id);
+
     @DeleteMapping("/{id}")
     ApiResult<Boolean> delete(@NotNull @PathVariable Integer id);
 
