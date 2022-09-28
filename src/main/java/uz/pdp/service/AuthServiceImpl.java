@@ -7,11 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
 
     @Value("${spring.mail.username}")
     private String sender;
@@ -59,13 +54,13 @@ public class AuthServiceImpl implements AuthService {
     public AuthServiceImpl(UserRepository userRepository,
                            @Lazy PasswordEncoder passwordEncoder,
                            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
-                           @Lazy AuthenticationManager authenticationManager,
+//                           @Lazy AuthenticationManager authenticationManager,
                            RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.javaMailSender = javaMailSender;
-        this.authenticationManager = authenticationManager;
+//        this.authenticationManager = authenticationManager;
         this.roleRepository = roleRepository;
     }
 
@@ -118,14 +113,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        signDTO.getPhoneNumber(),
-                        signDTO.getPassword()
-                ));
-
-        User user = (User) authentication.getPrincipal();
-
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        signDTO.getPhoneNumber(),
+//                        signDTO.getPassword()
+//                ));
+//
+//        User user = (User) authentication.getPrincipal();
+        User user = new User(signDTO.getPhoneNumber(),signDTO.getPassword());
         String accessToken = generateToken(user.getPhoneNumber(), true);
         String refreshToken = generateToken(user.getPhoneNumber(), false);
 
