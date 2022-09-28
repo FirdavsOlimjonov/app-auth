@@ -14,6 +14,7 @@ import uz.pdp.payload.RoleDTO;
 import uz.pdp.repository.RoleRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +42,7 @@ public class RoleServiceImpl implements RoleService {
         return ApiResult.successResponse(mapRoleToRoleDTO(role));
     }
 
+
     @Override
     public ApiResult<Boolean> delete(Integer id) {
         roleRepository.deleteById(id);
@@ -58,6 +60,22 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ApiResult<PermissionEnum[]> getPermissions() {
         return apiResultAllPermissions;
+    }
+
+    @Override
+    public ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id) {
+
+        Optional<Role> optionalRole = roleRepository.findById(id);
+        if (optionalRole.isPresent())
+            return ApiResult.successResponse("bu role mavjud");
+        Role role = optionalRole.get();
+        role.setName(addRoleDTO.getName());
+        role.setDescription(addRoleDTO.getDescription());
+        role.setPermissions(addRoleDTO.getPermissions());
+
+        roleRepository.save(role);
+        return ApiResult.successResponse("Ozgartirildi!");
+
     }
 
     private List<RoleDTO> mapLanguagesToLanguageDTOList(List<Role> roles) {

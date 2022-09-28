@@ -25,6 +25,12 @@ public class RoleControllerImpl implements RoleController {
     }
 
     @Override
+    public ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id) {
+        ApiResult<Boolean> apiResult = roleService.edit(addRoleDTO, id);
+        return null;
+    }
+
+    @Override
     public ApiResult<Boolean> delete(@PathVariable Integer id) {
         return roleService.delete(id);
     }
