@@ -1,4 +1,4 @@
-package uz.pdp.service.contract;
+package uz.pdp.service;
 
 import uz.pdp.entity.PermissionEnum;
 import uz.pdp.payload.AddRoleDTO;
