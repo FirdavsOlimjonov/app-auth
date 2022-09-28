@@ -1,4 +1,4 @@
-package uz.pdp.appauth;
+package uz.pdp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
