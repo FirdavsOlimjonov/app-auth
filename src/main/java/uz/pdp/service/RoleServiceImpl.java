@@ -26,17 +26,12 @@ public class RoleServiceImpl implements RoleService {
     private final ApiResult<PermissionEnum[]> apiResultAllPermissions =
             ApiResult.successResponse(PermissionEnum.values());
 
-
     @Override
     public ApiResult<RoleDTO> add(AddRoleDTO addRoleDTO) {
-        if (roleRepository.exists(Example.of(new Role(addRoleDTO.getName()))))
+        if (roleRepository.existsByName(addRoleDTO.getName()))
             throw RestException.restThrow("Such role already exists", HttpStatus.CONFLICT);
 
-        Role role = new Role(
-                addRoleDTO.getName(),
-                addRoleDTO.getDescription(),
-                addRoleDTO.getPermissions());
-
+        Role role = addRoleDTO.mapToRole();
         roleRepository.save(role);
 
         return ApiResult.successResponse(mapRoleToRoleDTO(role));
@@ -55,6 +50,15 @@ public class RoleServiceImpl implements RoleService {
         List<RoleDTO> roleDTOList = mapLanguagesToLanguageDTOList(all);
 
         return ApiResult.successResponse(roleDTOList);
+    }
+
+    @Override
+    public ApiResult<RoleDTO> getRole(Integer id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> RestException.restThrow(
+                        "NO_SUCH_ROLE", HttpStatus.NOT_FOUND));
+
+        return ApiResult.successResponse(new RoleDTO(role));
     }
 
     @Override

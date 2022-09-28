@@ -18,4 +18,6 @@ public interface RoleService {
     ApiResult<PermissionEnum[]> getPermissions();
 
     ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id);
+
+    ApiResult<RoleDTO> getRole(Integer id);
 }

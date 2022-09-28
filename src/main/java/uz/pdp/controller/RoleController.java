@@ -8,6 +8,7 @@ import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RequestMapping(path = RoleController.ROLE_BASE_PATH)
@@ -22,7 +23,10 @@ public interface RoleController {
     @PutMapping("/{id}")
     ApiResult<Boolean> edit(AddRoleDTO addRoleDTO,Integer id);
     @DeleteMapping("/{id}")
-    ApiResult<Boolean> delete(@PathVariable Integer id);
+    ApiResult<Boolean> delete(@NotNull @PathVariable Integer id);
+
+    @GetMapping("/{id}")
+    ApiResult<RoleDTO> getRole(@NotNull @PathVariable Integer id);
 
     @GetMapping("/list")
     ApiResult<List<RoleDTO>> getRoles();
