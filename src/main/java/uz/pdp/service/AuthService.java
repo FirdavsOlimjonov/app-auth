@@ -1,6 +1,5 @@
 package uz.pdp.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
