@@ -14,6 +14,7 @@ import uz.pdp.payload.RoleDTO;
 import uz.pdp.repository.RoleRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,21 +26,17 @@ public class RoleServiceImpl implements RoleService {
     private final ApiResult<PermissionEnum[]> apiResultAllPermissions =
             ApiResult.successResponse(PermissionEnum.values());
 
-
     @Override
     public ApiResult<RoleDTO> add(AddRoleDTO addRoleDTO) {
-        if (roleRepository.exists(Example.of(new Role(addRoleDTO.getName()))))
+        if (roleRepository.existsByName(addRoleDTO.getName()))
             throw RestException.restThrow("Such role already exists", HttpStatus.CONFLICT);
 
-        Role role = new Role(
-                addRoleDTO.getName(),
-                addRoleDTO.getDescription(),
-                addRoleDTO.getPermissions());
-
+        Role role = addRoleDTO.mapToRole();
         roleRepository.save(role);
 
         return ApiResult.successResponse(mapRoleToRoleDTO(role));
     }
+
 
     @Override
     public ApiResult<Boolean> delete(Integer id) {
@@ -56,8 +53,33 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public ApiResult<RoleDTO> getRole(Integer id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> RestException.restThrow(
+                        "NO_SUCH_ROLE", HttpStatus.NOT_FOUND));
+
+        return ApiResult.successResponse(new RoleDTO(role));
+    }
+
+    @Override
     public ApiResult<PermissionEnum[]> getPermissions() {
         return apiResultAllPermissions;
+    }
+
+    @Override
+    public ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id) {
+
+        Optional<Role> optionalRole = roleRepository.findById(id);
+        if (optionalRole.isPresent())
+            return ApiResult.successResponse("bu role mavjud");
+        Role role = optionalRole.get();
+        role.setName(addRoleDTO.getName());
+        role.setDescription(addRoleDTO.getDescription());
+        role.setPermissions(addRoleDTO.getPermissions());
+
+        roleRepository.save(role);
+        return ApiResult.successResponse("Ozgartirildi!");
+
     }
 
     private List<RoleDTO> mapLanguagesToLanguageDTOList(List<Role> roles) {
