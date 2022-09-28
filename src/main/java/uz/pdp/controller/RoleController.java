@@ -19,7 +19,7 @@ public interface RoleController {
 
 
     @PutMapping("/{id}")
-    ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id);
+    ApiResult<Boolean> edit(@Valid  AddRoleDTO addRoleDTO, @NotNull Integer id);
 
     @DeleteMapping("/{id}")
     ApiResult<Boolean> delete(@NotNull @PathVariable Integer id);
