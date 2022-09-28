@@ -56,6 +56,9 @@ public class DataLoader implements CommandLineRunner {
                     passwordEncoder.encode(adminPassword));
 //            admin.setRole(role);
             admin.setEnabled(true);
+            admin.setAccountNonExpired(true);
+            admin.setAccountNonLocked(true);
+            admin.setCredentialsNonExpired(true);
 
             userRepository.save(admin);
         }
