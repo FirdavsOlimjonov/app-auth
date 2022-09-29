@@ -1,6 +1,6 @@
-package uz.pdp.service.contract;
+package uz.pdp.service;
 
-import uz.pdp.entity.PermissionEnum;
+import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.payload.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
@@ -16,4 +16,8 @@ public interface RoleService {
     ApiResult<List<RoleDTO>> getRoles();
 
     ApiResult<PermissionEnum[]> getPermissions();
+
+    ApiResult<Boolean> edit(AddRoleDTO addRoleDTO, Integer id);
+
+    ApiResult<RoleDTO> getRole(Integer id);
 }

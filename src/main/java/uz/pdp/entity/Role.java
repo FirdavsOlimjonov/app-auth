@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uz.pdp.entity.enums.PermissionEnum;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,7 +18,7 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id;//10
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -29,14 +29,4 @@ public class Role {
     @ElementCollection
     @Enumerated(value = EnumType.STRING)
     private Set<PermissionEnum> permissions;
-
-    public Role(String name) {
-        this.name = name;
-    }
-
-    public Role(String name, String description, Set<PermissionEnum> permissions) {
-        this.name = name;
-        this.description = description;
-        this.permissions = permissions;
-    }
 }
