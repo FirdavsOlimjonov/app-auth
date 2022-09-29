@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private String ACCESS_TOKEN_KEY;
 
     //    @Value("${server.port}")
-    private String API_PORT = "8090";
+//    private String API_PORT = "8090";
 
     private final String API = " http://localhost:";
 
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+//    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 //    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
@@ -52,16 +52,16 @@ public class AuthServiceImpl implements AuthService {
 //    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
-                           @Lazy PasswordEncoder passwordEncoder,
+                           @Lazy PasswordEncoder passwordEncoder
 //                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
 //                           @Lazy AuthenticationManager authenticationManager,
-                           RoleRepository roleRepository
+//                           RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
 //        this.javaMailSender = javaMailSender;
 //        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
+//        this.roleRepository = roleRepository;
     }
 
 

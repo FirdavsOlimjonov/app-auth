@@ -1,7 +1,7 @@
 package uz.pdp.controller;
 
 import org.springframework.web.bind.annotation.*;
-import uz.pdp.entity.PermissionEnum;
+import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.payload.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
