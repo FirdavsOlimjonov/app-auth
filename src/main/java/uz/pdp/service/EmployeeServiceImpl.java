@@ -21,40 +21,40 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public ResponseEntity<List<EmployeeDTO>> getAll() {
+    public ResponseEntity<List<Employee>> getAll() {
         List<Employee> all = employeeRepository.findAll();
 
-        List<EmployeeDTO> list = new ArrayList<>();
-
-        for (Employee employee : all) {
-
-            EmployeeDTO employeeDTO = new EmployeeDTO();
-            employeeDTO.setFirstName(employee.getUser().getFirstName());
-            employeeDTO.setLastName(employee.getUser().getLastName());
-            employeeDTO.setRole(employee.getRole());
-            employeeDTO.setMiddleName(employee.getUser().getMiddleName());
-            employeeDTO.setPhoneNumber(employee.getUser().getPhoneNumber());
-
-            list.add(employeeDTO);
-
-            return ResponseEntity.ok(list);
-        }
+//        List<EmployeeDTO> list = new ArrayList<>();
+//
+//        for (Employee employee : all) {
+//
+//            EmployeeDTO employeeDTO = new EmployeeDTO();
+//            employeeDTO.setFirstName(employee.getUser().getFirstName());
+//            employeeDTO.setLastName(employee.getUser().getLastName());
+//            employeeDTO.setRole(employee.getRole());
+//            employeeDTO.setMiddleName(employee.getUser().getMiddleName());
+//            employeeDTO.setPhoneNumber(employee.getUser().getPhoneNumber());
+//
+//            list.add(employeeDTO);
+//
+//            return ResponseEntity.ok(list);
+//        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @Override
-    public ResponseEntity<EmployeeDTO> getOne(UUID id) {
-        Optional<Employee> employeeDTO = employeeRepository.findEmployeeByUserId(id);
-        if (employeeDTO.isPresent()) {
-            Employee employee = employeeDTO.get();
-            EmployeeDTO employeeDTO1 = new EmployeeDTO();
-            employeeDTO1.setFirstName(employee.getUser().getFirstName());
-            employeeDTO1.setLastName(employee.getUser().getLastName());
-            employeeDTO1.setRole(employee.getRole());
-            employeeDTO1.setMiddleName(employee.getUser().getMiddleName());
-            employeeDTO1.setPhoneNumber(employee.getUser().getPhoneNumber());
-            return ResponseEntity.ok(employeeDTO1);
-        }
+    public ResponseEntity<Employee> getOne(UUID id) {
+//        Optional<Employee> employeeDTO = employeeRepository.findEmployeeByUserId(id);
+//        if (employeeDTO.isPresent()) {
+//            Employee employee = employeeDTO.get();
+//            EmployeeDTO employeeDTO1 = new EmployeeDTO();
+//            employeeDTO1.setFirstName(employee.getUser().getFirstName());
+//            employeeDTO1.setLastName(employee.getUser().getLastName());
+//            employeeDTO1.setRole(employee.getRole());
+//            employeeDTO1.setMiddleName(employee.getUser().getMiddleName());
+//            employeeDTO1.setPhoneNumber(employee.getUser().getPhoneNumber());
+//            return ResponseEntity.ok(employeeDTO1);
+//        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 

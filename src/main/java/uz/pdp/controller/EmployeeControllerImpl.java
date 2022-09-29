@@ -18,12 +18,12 @@ public class EmployeeControllerImpl implements EmployeeController{
     private final EmployeeService employeeService;
 
     @Override
-    public ResponseEntity<List<EmployeeDTO>> getAll() {
+    public ResponseEntity<List<Employee>> getAll() {
         return employeeService.getAll();
     }
 
     @Override
-    public ResponseEntity<EmployeeDTO> getOne(UUID id) {
+    public ResponseEntity<Employee> getOne(UUID id) {
         return employeeService.getOne(id);
     }
 
