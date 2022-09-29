@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/auth_db
     username: postgres
-    password: root123
+    password: 2004
 
   driver-class-name=com:
     mysql:
