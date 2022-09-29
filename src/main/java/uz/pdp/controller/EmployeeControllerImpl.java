@@ -8,6 +8,7 @@ import uz.pdp.payload.EmployeeDTO;
 import uz.pdp.service.EmployeeService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class EmployeeControllerImpl implements EmployeeController{
     }
 
     @Override
-    public ResponseEntity<EmployeeDTO> getOne(Integer id) {
+    public ResponseEntity<EmployeeDTO> getOne(UUID id) {
         return employeeService.getOne(id);
     }
 
@@ -31,12 +32,12 @@ public class EmployeeControllerImpl implements EmployeeController{
     }
 
     @Override
-    public ResponseEntity<Boolean> edit(EmployeeDTO employeeDTO, Integer id) {
-        return employeeService.edit(employeeDTO, id);
+    public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
+        return employeeService.edit(employee, id);
     }
 
     @Override
-    public ResponseEntity<Boolean> delete(Integer id) {
+    public ResponseEntity<Boolean> delete(UUID id) {
         return employeeService.delete(id);
     }
 }

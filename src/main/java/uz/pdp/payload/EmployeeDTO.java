@@ -1,6 +1,7 @@
 package uz.pdp.payload;
 
 import lombok.Data;
+import uz.pdp.entity.Role;
 
 @Data
 public class EmployeeDTO {
@@ -13,5 +14,5 @@ public class EmployeeDTO {
 
     private String phoneNumber;
 
-    private String role_String;
+    private Role role;
 }
