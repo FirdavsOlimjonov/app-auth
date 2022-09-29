@@ -1,4 +1,4 @@
-package uz.pdp.controller.cotract;
+package uz.pdp.controller;
 
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.payload.ApiResult;

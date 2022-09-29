@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -16,11 +16,22 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-public class User implements UserDetails {
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String middleName;
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
@@ -43,13 +54,13 @@ public class User implements UserDetails {
         enabled = false;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Roles.USER.getPermissions();
-    }
-
-    @Override
-    public String getUsername() {
-        return this.phoneNumber;
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Roles.USER.getPermissions();
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return this.phoneNumber;
+//    }
 }

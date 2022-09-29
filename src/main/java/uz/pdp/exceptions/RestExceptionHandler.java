@@ -4,9 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AccountStatusException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,21 +53,21 @@ public class RestExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = AccessDeniedException.class)
-    public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(AccessDeniedException ex) {
-        ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
-                "Huquqingiz yo'q okasi",
-                HttpStatus.FORBIDDEN.value());
-        return new ResponseEntity<>(apiResult, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(value = InsufficientAuthenticationException.class)
-    public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(InsufficientAuthenticationException ex) {
-        ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
-                "Full authentication is required to access this resource",
-                HttpStatus.UNAUTHORIZED.value());
-        return new ResponseEntity<>(apiResult, HttpStatus.UNAUTHORIZED);
-    }
+//    @ExceptionHandler(value = AccessDeniedException.class)
+//    public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(AccessDeniedException ex) {
+//        ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
+//                "Huquqingiz yo'q okasi",
+//                HttpStatus.FORBIDDEN.value());
+//        return new ResponseEntity<>(apiResult, HttpStatus.FORBIDDEN);
+//    }
+//
+//    @ExceptionHandler(value = InsufficientAuthenticationException.class)
+//    public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(InsufficientAuthenticationException ex) {
+//        ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
+//                "Full authentication is required to access this resource",
+//                HttpStatus.UNAUTHORIZED.value());
+//        return new ResponseEntity<>(apiResult, HttpStatus.UNAUTHORIZED);
+//    }
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(Exception ex) {
@@ -82,14 +79,14 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(apiResult, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(value = AccountStatusException.class)
-    public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(AccountStatusException ex) {
-        log.error("Exception: ", ex);
-        ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
-                ex.getMessage(),
-                HttpStatus.UNAUTHORIZED.value());
-        return new ResponseEntity<>(apiResult, HttpStatus.UNAUTHORIZED);
-    }
+//    @ExceptionHandler(value = AccountStatusException.class)
+//    public ResponseEntity<ApiResult<List<ErrorData>>> exceptionHandle(AccountStatusException ex) {
+//        log.error("Exception: ", ex);
+//        ApiResult<List<ErrorData>> apiResult = ApiResult.failResponse(
+//                ex.getMessage(),
+//                HttpStatus.UNAUTHORIZED.value());
+//        return new ResponseEntity<>(apiResult, HttpStatus.UNAUTHORIZED);
+//    }
 
 
 }
