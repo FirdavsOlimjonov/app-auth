@@ -1,6 +1,6 @@
 package uz.pdp.service;
 
-import uz.pdp.entity.PermissionEnum;
+import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.payload.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
