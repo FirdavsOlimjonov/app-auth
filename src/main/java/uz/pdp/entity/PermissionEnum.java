@@ -1,9 +1,9 @@
 package uz.pdp.entity;
 
 
-import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.GrantedAuthority;
 
-public enum PermissionEnum implements GrantedAuthority {
+public enum PermissionEnum {
 
     ORDER,
     EDIT_LANGUAGE,
@@ -14,8 +14,8 @@ public enum PermissionEnum implements GrantedAuthority {
     DELETE_USER,
     GET_USER_PROBLEMS;
 
-    @Override
-    public String getAuthority() {
-        return this.name();
-    }
+//    @Override
+//    public String getAuthority() {
+//        return this.name();
+//    }
 }

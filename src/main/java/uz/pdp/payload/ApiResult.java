@@ -10,7 +10,7 @@ import java.util.Objects;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
-public class ApiResult<E> {
+public class ApiResult<E>{
 
     private boolean success;
 
