@@ -1,0 +1,19 @@
+POST http://localhost:8090/api/client/list?page=0&size=10
+Content-Type: application/json
+
+{
+  "filtering": {
+    "filterType": "ACTIVE"
+  },
+  "searching": "a",
+  "sorting": [
+    {
+      "columnName": "NAME",
+      "type": "ASC"
+    },
+    {
+      "columnName": "ORDER_COUNT",
+      "type": "DESC"
+    }
+  ]
+}

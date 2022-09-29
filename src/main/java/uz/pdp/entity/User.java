@@ -3,6 +3,7 @@ package uz.pdp.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -16,13 +17,15 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
+@ToString
 public class User {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID",
+//            strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(nullable = false)
     private String firstName;
