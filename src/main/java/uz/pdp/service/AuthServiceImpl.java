@@ -45,21 +45,21 @@ public class AuthServiceImpl implements AuthService {
 
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
+//    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
 
-    @Value("${spring.mail.username}")
-    private String sender;
+//    @Value("${spring.mail.username}")
+//    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
                            @Lazy PasswordEncoder passwordEncoder,
-                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
+//                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
 //                           @Lazy AuthenticationManager authenticationManager,
                            RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.javaMailSender = javaMailSender;
+//        this.javaMailSender = javaMailSender;
 //        this.authenticationManager = authenticationManager;
         this.roleRepository = roleRepository;
     }
