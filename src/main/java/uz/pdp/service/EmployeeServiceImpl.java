@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<EmployeeDTO> getOne(UUID id) {
-        Optional<Employee> employeeDTO = employeeRepository.findById(id);
+        Optional<Employee> employeeDTO = employeeRepository.findEmployeeByUserId(id);
         if (employeeDTO.isPresent()) {
             Employee employee = employeeDTO.get();
             EmployeeDTO employeeDTO1 = new EmployeeDTO();
@@ -78,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Boolean> add(Employee employee) {
-        if (employeeRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber())) {
+        if (employeeRepository.existsByUserId(employee.getUser().getId())) {
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
         }
         employeeRepository.save(employee);
@@ -87,35 +87,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
-        if (employeeRepository.existsById(id)) {
-
-            List<Employee> all = employeeRepository.findAll();
-
-            for (Employee employee1 : all) {
-                if (employee1.getUser().getId().equals(employee.getUser().getId())) {
-                    if (employee1.getUser().getPhoneNumber().equals(employee.getUser().getPhoneNumber())) {
-                        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-                    }
-
-                    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-
-                }
-
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-            }
-        }
+//        if (employeeRepository.existsById(id)) {
+//
+//            List<Employee> all = employeeRepository.findAll();
+//
+//            for (Employee employee1 : all) {
+//                if (employee1.getUser().getId().equals(employee.getUser().getId())) {
+//                    if (employee1.getUser().getPhoneNumber().equals(employee.getUser().getPhoneNumber())) {
+//                        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
+//                    }
+//
+//                    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+//
+//                }
+//
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//
+//            }
+//        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 
     @Override
     public ResponseEntity<Boolean> delete(UUID id) {
-        if (employeeRepository.existsById(id)) {
-            employeeRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }
-
+//        if (employeeRepository.existsById(id)) {
+//            employeeRepository.deleteById(id);
+//            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+//        }
+//
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
