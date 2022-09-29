@@ -10,4 +10,3 @@ spring:
     config:
       uri: http://localhost:8283
       name: ketmon
-//
