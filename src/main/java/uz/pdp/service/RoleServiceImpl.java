@@ -2,10 +2,9 @@ package uz.pdp.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import uz.pdp.entity.PermissionEnum;
+import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.AddRoleDTO;

@@ -3,10 +3,14 @@ package uz.pdp.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -16,7 +20,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-public class User {
+@DynamicInsert
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -24,19 +29,9 @@ public class User {
             strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
-    private String middleName;
-
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(nullable = false)
     private String password;
     private boolean accountNonExpired;
 
@@ -54,13 +49,14 @@ public class User {
         enabled = false;
     }
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Roles.USER.getPermissions();
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return this.phoneNumber;
-//    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new ArrayList<>();
+    }
+
+
+    @Override
+    public String getUsername() {
+        return this.phoneNumber;
+    }
 }
