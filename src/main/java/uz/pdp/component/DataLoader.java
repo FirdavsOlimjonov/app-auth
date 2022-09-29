@@ -35,8 +35,9 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (Objects.equals(ddlMode, "create")) {
+        if (Objects.equals(ddlMode, "create") || Objects.equals(ddlMode, "create-drop")) {
             User admin = new User(adminPhoneNumber,passwordEncoder.encode(adminPassword));
+            admin.setEnabled(true);
             admin = userRepository.save(admin);
 
             Role roleSuperAdmin = new Role();
