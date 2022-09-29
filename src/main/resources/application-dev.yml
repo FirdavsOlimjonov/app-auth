@@ -6,6 +6,10 @@ spring:
     username: postgres
     password: root123
 
+  driver-class-name=com:
+    mysql:
+      jdbc:
+        Driver:
   jpa:
     hibernate:
       ddl-auto: create
