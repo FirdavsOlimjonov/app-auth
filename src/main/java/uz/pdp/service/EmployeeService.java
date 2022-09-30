@@ -10,9 +10,9 @@ import java.util.UUID;
 
 public interface EmployeeService {
 
-    ResponseEntity<List<EmployeeDTO>> getAll();
+    ResponseEntity<List<Employee>> getAll();
 
-    ResponseEntity<EmployeeDTO> getOne(UUID id);
+    ResponseEntity<Employee> getOne(UUID id);
 
     ResponseEntity<Boolean> add(Employee employee);
 

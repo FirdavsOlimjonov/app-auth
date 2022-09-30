@@ -14,10 +14,10 @@ import java.util.UUID;
 public interface EmployeeController {
 
     @GetMapping("/getAll")
-    ResponseEntity<List<EmployeeDTO>> getAll();
+    ResponseEntity<List<Employee>> getAll();
 
     @GetMapping("/getOne/{id}")
-    ResponseEntity<EmployeeDTO> getOne(@PathVariable UUID id);
+    ResponseEntity<Employee> getOne(@PathVariable UUID id);
 
     @PostMapping("/add")
     ResponseEntity<Boolean> add(@RequestBody Employee employee);

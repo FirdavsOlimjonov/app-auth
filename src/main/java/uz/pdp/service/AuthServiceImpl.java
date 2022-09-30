@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private String ACCESS_TOKEN_KEY;
 
     //    @Value("${server.port}")
-    private String API_PORT = "8090";
+//    private String API_PORT = "8090";
 
     private final String API = " http://localhost:";
 
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+//    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTFilter jwtFilter;
 
@@ -64,7 +64,6 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
 //        this.javaMailSender = javaMailSender;
 //        this.authenticationManager = authenticationManager;
-        this.jwtFilter = jwtFilter;
         this.roleRepository = roleRepository;
     }
 
