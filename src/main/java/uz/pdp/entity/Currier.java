@@ -28,7 +28,6 @@ public class Currier {
     @JoinColumn(unique = true)
     @OneToOne(optional = false)
     private User user;
-
     @Column(nullable = false)
     private LocalDate birthDate;
 
@@ -41,4 +40,12 @@ public class Currier {
     private String carNumber;
 
     private String driverLicense;
+
+    public Currier(LocalDate birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
+        this.birthDate = birthDate;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.carNumber = carNumber;
+        this.driverLicense = driverLicense;
+    }
 }
