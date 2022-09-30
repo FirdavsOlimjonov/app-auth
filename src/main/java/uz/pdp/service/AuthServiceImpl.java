@@ -46,6 +46,8 @@ public class AuthServiceImpl implements AuthService {
 
     //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTFilter jwtFilter;
+
 //    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
 
