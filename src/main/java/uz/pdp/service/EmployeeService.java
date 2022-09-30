@@ -3,6 +3,7 @@ package uz.pdp.service;
 import org.springframework.http.ResponseEntity;
 import uz.pdp.entity.Employee;
 import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.SearchDTO;
 
 
 import java.util.List;
@@ -19,5 +20,8 @@ public interface EmployeeService {
     ResponseEntity<Boolean> edit(Employee employee, UUID id);
 
     ResponseEntity<Boolean> delete(UUID id);
+
+
+    ResponseEntity<?> filter(SearchDTO searchDTO);
 
 }

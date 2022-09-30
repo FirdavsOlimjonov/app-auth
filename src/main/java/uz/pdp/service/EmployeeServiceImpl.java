@@ -1,16 +1,17 @@
 package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Employee;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.SearchDTO;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.UserRepository;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -134,6 +135,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    public ResponseEntity<Page<Employee>> filter(SearchDTO searchDTO) {
+        return ResponseEntity
+                .ok(employeeRepository
+                        .searchBy(searchDTO.getEmployeeType(),
+                                searchDTO.getSearchingField(),
+                                PageRequest.of(searchDTO.getPage(),
+                                        searchDTO.getSize())));
     }
 }
 
