@@ -15,5 +15,5 @@ public interface AuthService {      //extends UserDetailsService
 
     ApiResult<TokenDTO> refreshToken(String accessToken, String refreshToken);
 
-    User getUserByToken(String token);
+    ApiResult<User> getUserByToken(String token);
 }

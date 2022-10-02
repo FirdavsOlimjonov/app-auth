@@ -6,8 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +14,6 @@ import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
-import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
 import uz.pdp.security.JWTFilter;
 
@@ -45,7 +42,9 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-//    private final RoleRepository roleRepository;
+    private final JWTFilter jwtFilter;
+
+    //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 //    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
@@ -54,12 +53,14 @@ public class AuthServiceImpl implements AuthService {
 //    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
+                           JWTFilter jwtFilter,
                            @Lazy PasswordEncoder passwordEncoder
 //                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
 //                           @Lazy AuthenticationManager authenticationManager,
 //                           RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
+        this.jwtFilter = jwtFilter;
         this.passwordEncoder = passwordEncoder;
 //        this.javaMailSender = javaMailSender;
 //        this.authenticationManager = authenticationManager;
@@ -184,8 +185,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User getUserByToken(String token) {
-        return null;
+    public ApiResult<User> getUserByToken(String token) {
+        String phoneNumber = jwtFilter.getEmailFromToken(token);
+        return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> RestException.restThrow("",HttpStatus.NOT_FOUND)));
     }
 
     public String generateToken(String email, boolean accessToken) {
@@ -221,9 +223,4 @@ public class AuthServiceImpl implements AuthService {
 //        javaMailSender.send(mailMessage);
     }
 
-    @Override
-    public User getUserByToken(String token) {
-
-        return null;
-    }
 }

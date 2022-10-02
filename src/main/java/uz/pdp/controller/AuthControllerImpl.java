@@ -40,6 +40,6 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     public ApiResult<User> getUserByToken(String token) {
-        return ApiResult.successResponse(authService.getUserByToken(token));
+        return authService.getUserByToken(token);
     }
 }
