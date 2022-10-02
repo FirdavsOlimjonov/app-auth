@@ -116,17 +116,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
 
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        signDTO.getPhoneNumber(),
-//                        signDTO.getPassword()
-//                ));
-//
-//        User user = (User) authentication.getPrincipal();
         User user = new User(signDTO.getPhoneNumber(),signDTO.getPassword());
         String accessToken = generateToken(user.getPhoneNumber(), true);
         String refreshToken = generateToken(user.getPhoneNumber(), false);
-
 
         TokenDTO tokenDTO = TokenDTO
                 .builder()
@@ -187,7 +179,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<User> getUserByToken(String token) {
         String phoneNumber = jwtFilter.getEmailFromToken(token);
-        return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> RestException.restThrow("",HttpStatus.NOT_FOUND)));
+        return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> RestException.restThrow("NOT_FOUND",HttpStatus.NOT_FOUND)));
     }
 
     public String generateToken(String email, boolean accessToken) {
