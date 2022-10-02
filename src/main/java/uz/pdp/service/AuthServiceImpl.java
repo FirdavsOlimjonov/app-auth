@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +46,6 @@ public class AuthServiceImpl implements AuthService {
 
 //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTFilter jwtFilter;
-
 //    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
 
@@ -54,17 +53,16 @@ public class AuthServiceImpl implements AuthService {
 //    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
-                           @Lazy PasswordEncoder passwordEncoder,
+                           @Lazy PasswordEncoder passwordEncoder
 //                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
 //                           @Lazy AuthenticationManager authenticationManager,
-                           JWTFilter jwtFilter,
-                           RoleRepository roleRepository
+//                           RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
 //        this.javaMailSender = javaMailSender;
 //        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
+//        this.roleRepository = roleRepository;
     }
 
 
@@ -123,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
 //                ));
 //
 //        User user = (User) authentication.getPrincipal();
-        User user = new User(signDTO.getPhoneNumber(), signDTO.getPassword());
+        User user = new User(signDTO.getPhoneNumber(),signDTO.getPassword());
         String accessToken = generateToken(user.getPhoneNumber(), true);
         String refreshToken = generateToken(user.getPhoneNumber(), false);
 
@@ -182,12 +180,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         throw RestException.restThrow("ACCESS_TOKEN_NOT_EXPIRED", HttpStatus.UNAUTHORIZED);
-    }
-
-    @Override
-    public User getUserByToken(String token) {
-        String phoneNumber = jwtFilter.getEmailFromToken(token);
-        return userRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> RestException.restThrow("",HttpStatus.NOT_FOUND));
     }
 
     public String generateToken(String email, boolean accessToken) {
