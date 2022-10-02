@@ -183,6 +183,11 @@ public class AuthServiceImpl implements AuthService {
         throw RestException.restThrow("ACCESS_TOKEN_NOT_EXPIRED", HttpStatus.UNAUTHORIZED);
     }
 
+    @Override
+    public User getUserByToken(String token) {
+        return null;
+    }
+
     public String generateToken(String email, boolean accessToken) {
 
         Date expiredDate = new Date(new Date().getTime() +
