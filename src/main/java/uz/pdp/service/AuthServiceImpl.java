@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +47,6 @@ public class AuthServiceImpl implements AuthService {
 
     //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTFilter jwtFilter;
-
 //    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
 
