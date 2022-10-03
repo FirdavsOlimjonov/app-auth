@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uz.pdp.util.UserFields;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.password = password;
         accountNonExpired = accountNonLocked = credentialsNonExpired = true;
-        enabled = false;
+        enabled = UserFields.enabled;
     }
 
     @Override

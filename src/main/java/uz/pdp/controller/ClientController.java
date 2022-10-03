@@ -2,31 +2,33 @@ package uz.pdp.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.pdp.entity.Client;
 import uz.pdp.entity.Employee;
-import uz.pdp.payload.EmployeeDTO;
-
+import uz.pdp.payload.ClientDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 
-@RequestMapping("/employee")
-public interface EmployeeController {
+@RequestMapping("/api/client")
+public interface ClientController {
 
     @GetMapping("/getAll")
-    ResponseEntity<List<Employee>> getAll();
+    ResponseEntity<List<Client>> getAll();
 
     @GetMapping("/getOne/{id}")
-    ResponseEntity<Employee> getOne(@PathVariable UUID id);
+    ResponseEntity<Client> getOne(@PathVariable UUID id);
 
     @PostMapping("/add")
-    ResponseEntity<Boolean> add(@RequestBody Employee employee);
+    ResponseEntity<Boolean> save(@RequestBody ClientDTO clientDTO);
+
 
     @PutMapping("/edit/{id}")
-    ResponseEntity<Boolean> edit(@RequestBody Employee employee, @PathVariable UUID id);
+    ResponseEntity<Boolean> edit(@RequestBody Client client, @PathVariable UUID id);
 
     @DeleteMapping("/delete/{id}")
     ResponseEntity<Boolean> delete(@PathVariable UUID id);
+
 
 
 }

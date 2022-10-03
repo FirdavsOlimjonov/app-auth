@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +14,8 @@ import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
-import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
+import uz.pdp.security.JWTFilter;
 
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private String ACCESS_TOKEN_KEY;
 
     //    @Value("${server.port}")
-    private String API_PORT = "8090";
+//    private String API_PORT = "8090";
 
     private final String API = " http://localhost:";
 
@@ -43,25 +42,29 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+    private final JWTFilter jwtFilter;
+
+    //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
+//    private final JavaMailSender javaMailSender;
 //    private final AuthenticationManager authenticationManager;
 
-    @Value("${spring.mail.username}")
-    private String sender;
+//    @Value("${spring.mail.username}")
+//    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
-                           @Lazy PasswordEncoder passwordEncoder,
-                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
+                           JWTFilter jwtFilter,
+                           @Lazy PasswordEncoder passwordEncoder
+//                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
 //                           @Lazy AuthenticationManager authenticationManager,
-                           RoleRepository roleRepository
+//                           RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
+        this.jwtFilter = jwtFilter;
         this.passwordEncoder = passwordEncoder;
-        this.javaMailSender = javaMailSender;
+//        this.javaMailSender = javaMailSender;
 //        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
+//        this.roleRepository = roleRepository;
     }
 
 
@@ -113,17 +116,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
 
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        signDTO.getPhoneNumber(),
-//                        signDTO.getPassword()
-//                ));
-//
-//        User user = (User) authentication.getPrincipal();
         User user = new User(signDTO.getPhoneNumber(),signDTO.getPassword());
         String accessToken = generateToken(user.getPhoneNumber(), true);
         String refreshToken = generateToken(user.getPhoneNumber(), false);
-
 
         TokenDTO tokenDTO = TokenDTO
                 .builder()
@@ -179,6 +174,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         throw RestException.restThrow("ACCESS_TOKEN_NOT_EXPIRED", HttpStatus.UNAUTHORIZED);
+    }
+
+    @Override
+    public ApiResult<User> getUserByToken(String token) {
+        String phoneNumber = jwtFilter.getEmailFromToken(token);
+        return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> RestException.restThrow("NOT_FOUND",HttpStatus.NOT_FOUND)));
     }
 
     public String generateToken(String email, boolean accessToken) {
