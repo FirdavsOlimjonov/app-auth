@@ -4,7 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.entity.Client;
 import uz.pdp.entity.Employee;
+import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.ClientDTO;
+import uz.pdp.payload.filterPayload.ClientDTOFilter;
+import uz.pdp.payload.filterPayload.ViewDTO;
+import uz.pdp.util.Pagination;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +33,9 @@ public interface ClientController {
     @DeleteMapping("/delete/{id}")
     ResponseEntity<Boolean> delete(@PathVariable UUID id);
 
-
+    @PostMapping("/filter-list")
+    ApiResult<List<ClientDTOFilter>> getALl(@RequestBody(required = false) ViewDTO viewDTO,
+                                            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) int page,
+                                            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) int size);
 
 }

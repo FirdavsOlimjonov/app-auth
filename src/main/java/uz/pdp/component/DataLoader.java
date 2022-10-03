@@ -9,6 +9,7 @@ import uz.pdp.entity.Employee;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
 import uz.pdp.entity.enums.PermissionEnum;
+import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
@@ -23,6 +24,8 @@ public class DataLoader implements CommandLineRunner {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+
+    private final ClientRepository clientRepository;
 
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String ddlMode;
@@ -55,5 +58,11 @@ public class DataLoader implements CommandLineRunner {
             superAdmin.setLastName("Admin");
             employeeRepository.save(superAdmin);
         }
+
+        if (Objects.nonNull(ddlMode) && ddlMode.startsWith("create")) {
+            clientRepository.executeInitialFunction();
+        }
     }
+
+
 }

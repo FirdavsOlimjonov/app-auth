@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.Client;
+import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.ClientDTO;
+import uz.pdp.payload.filterPayload.ClientDTOFilter;
+import uz.pdp.payload.filterPayload.ViewDTO;
 import uz.pdp.service.ClientService;
 
 import java.util.List;
@@ -40,5 +43,11 @@ public class ClientControllerImpl implements ClientController{
     @Override
     public ResponseEntity<Boolean> delete(UUID id) {
         return clientService.delete(id);
+    }
+
+    @Override
+    public ApiResult<List<ClientDTOFilter>> getALl(ViewDTO viewDTO, int page, int size) {
+
+        return clientService.getAllClients(viewDTO, page, size);
     }
 }
