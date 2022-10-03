@@ -31,7 +31,6 @@ public class AuthServiceImpl implements AuthService {
     @Value("${jwt.access.key}")
     private String ACCESS_TOKEN_KEY;
 
-    private final String API = " http://localhost:";
 
     @Value("${jwt.refresh.key}")
     private String REFRESH_TOKEN_KEY;
@@ -52,7 +51,8 @@ public class AuthServiceImpl implements AuthService {
 
     public AuthServiceImpl(UserRepository userRepository,
                            @Lazy AuthenticationManager authenticationManager,
-                           @Lazy PasswordEncoder passwordEncoder) {
+                           @Lazy PasswordEncoder passwordEncoder,
+                           JWTFilter jwtFilter) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtFilter = jwtFilter;
@@ -179,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
     public ApiResult<User> getUserByToken(String token) {
         String phoneNumber = jwtFilter.getEmailFromToken(token);
         return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> RestException.restThrow("NOT_FOUND",HttpStatus.NOT_FOUND)));
+                .orElseThrow(() -> RestException.restThrow("NOT_FOUND", HttpStatus.NOT_FOUND)));
     }
 
     public String generateToken(String email, boolean accessToken) {
@@ -202,17 +202,7 @@ public class AuthServiceImpl implements AuthService {
      * Send Verification Code To PhoneNumber
      */
     private void sendVerificationCodeToPhoneNumber(User user) {
-//        SimpleMailMessage mailMessage
-//                = new SimpleMailMessage();
-//
-//        // Setting up necessary details
-//        mailMessage.setFrom(sender);
-//        mailMessage.setTo(user.getPhoneNumber());
-//        mailMessage.setSubject("");
-//        mailMessage.setText("CLICK_LINK" + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
-//
-//        // Sending the mail
-//        javaMailSender.send(mailMessage);
+        System.out.println(user);
     }
 
 }

@@ -66,7 +66,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
     }
 
-    private String getEmailFromToken(String authorization) {
+    public String getEmailFromToken(String authorization) {
         String email = "";
         try {
             email = Jwts
