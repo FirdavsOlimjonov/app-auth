@@ -1,23 +1,17 @@
 package uz.pdp.payload;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import uz.pdp.entity.Role;
-import uz.pdp.entity.User;
 
+import java.time.LocalDate;
+import java.util.UUID;
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ClientDTO {
 
-    private String firstName;
-
-    private String lastName;
+    private UUID id;
 
     private String phoneNumber;
 
-    private String password;
+    private String name;
 
-    private User user;
+    private LocalDate birthDate;
 }

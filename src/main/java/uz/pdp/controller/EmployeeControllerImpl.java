@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.Employee;
-import uz.pdp.payload.EmployeeDTO;
-import uz.pdp.payload.SearchDTO;
+import uz.pdp.payload.AddEmployeeDTO;
+import uz.pdp.payload.ApiResult;
 import uz.pdp.service.EmployeeService;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class EmployeeControllerImpl implements EmployeeController{
     }
 
     @Override
-    public ResponseEntity<Boolean> add(Employee employee) {
+    public ApiResult<String> add(AddEmployeeDTO employee) {
         return employeeService.add(employee);
     }
 
@@ -40,10 +40,5 @@ public class EmployeeControllerImpl implements EmployeeController{
     @Override
     public ResponseEntity<Boolean> delete(UUID id) {
         return employeeService.delete(id);
-    }
-
-    @Override
-    public ResponseEntity<?> filter(SearchDTO searchDTO) {
-        return employeeService.filter(searchDTO);
     }
 }

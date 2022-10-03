@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import uz.pdp.entity.enums.CurrierStatusEnum;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -41,4 +42,16 @@ public class Currier {
     private String carNumber;
 
     private String driverLicense;
+
+    private boolean online;
+
+
+    public Currier(User user, LocalDate birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
+        this.user = user;
+        this.birthDate = birthDate;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.carNumber = carNumber;
+        this.driverLicense = driverLicense;
+    }
 }

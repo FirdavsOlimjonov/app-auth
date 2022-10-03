@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uz.pdp.entity.User;
 import uz.pdp.repository.UserRepository;
+import uz.pdp.util.RestConstants;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -38,7 +39,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private void setSecurityContext(HttpServletRequest request) {
-        String authorization = request.getHeader(AUTHENTICATION_HEADER);
+        String authorization = request.getHeader(RestConstants.AUTHENTICATION_HEADER);
         if (Objects.nonNull(authorization) && authorization.startsWith("Bearer")) {
 
             authorization = authorization.substring(6).trim();
@@ -75,15 +76,15 @@ public class JWTFilter extends OncePerRequestFilter {
                     .getBody()
                     .getSubject();
         } catch (SignatureException ex) {
-            System.out.println("Invalid JWT signature");
+            logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            System.out.println("Invalid JWT token");
+            logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            System.out.println("Expired JWT token");
+            logger.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            System.out.println("Unsupported JWT token");
+            logger.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            System.out.println("JWT claims string is empty.");
+            logger.error("JWT claims string is empty.");
         }
         return email;
     }

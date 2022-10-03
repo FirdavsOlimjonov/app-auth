@@ -6,6 +6,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +31,6 @@ public class AuthServiceImpl implements AuthService {
     @Value("${jwt.access.key}")
     private String ACCESS_TOKEN_KEY;
 
-    //    @Value("${server.port}")
-//    private String API_PORT = "8090";
-
-    private final String API = " http://localhost:";
 
     @Value("${jwt.refresh.key}")
     private String REFRESH_TOKEN_KEY;
@@ -41,41 +42,32 @@ public class AuthServiceImpl implements AuthService {
     private long REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
     private final JWTFilter jwtFilter;
 
     //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-//    private final JavaMailSender javaMailSender;
-//    private final AuthenticationManager authenticationManager;
-
-//    @Value("${spring.mail.username}")
-//    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
-                           JWTFilter jwtFilter,
-                           @Lazy PasswordEncoder passwordEncoder
-//                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
-//                           @Lazy AuthenticationManager authenticationManager,
-//                           RoleRepository roleRepository
-    ) {
+                           @Lazy AuthenticationManager authenticationManager,
+                           @Lazy PasswordEncoder passwordEncoder,
+                           JWTFilter jwtFilter) {
         this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
         this.jwtFilter = jwtFilter;
         this.passwordEncoder = passwordEncoder;
-//        this.javaMailSender = javaMailSender;
-//        this.authenticationManager = authenticationManager;
-//        this.roleRepository = roleRepository;
     }
 
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return userRepository
-//                .findByPhoneNumber(username)
-//                .orElseThrow(
-//                        () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
-//
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository
+                .findByPhoneNumber(username)
+                .orElseThrow(
+                        () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
+
+    }
 
     @Override
     @Transactional
@@ -116,9 +108,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
 
-        User user = new User(signDTO.getPhoneNumber(),signDTO.getPassword());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        signDTO.getPhoneNumber(),
+                        signDTO.getPassword()
+                ));
+
+        User user = (User) authentication.getPrincipal();
         String accessToken = generateToken(user.getPhoneNumber(), true);
         String refreshToken = generateToken(user.getPhoneNumber(), false);
+
 
         TokenDTO tokenDTO = TokenDTO
                 .builder()
@@ -180,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
     public ApiResult<User> getUserByToken(String token) {
         String phoneNumber = jwtFilter.getEmailFromToken(token);
         return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> RestException.restThrow("NOT_FOUND",HttpStatus.NOT_FOUND)));
+                .orElseThrow(() -> RestException.restThrow("NOT_FOUND", HttpStatus.NOT_FOUND)));
     }
 
     public String generateToken(String email, boolean accessToken) {
@@ -203,17 +202,7 @@ public class AuthServiceImpl implements AuthService {
      * Send Verification Code To PhoneNumber
      */
     private void sendVerificationCodeToPhoneNumber(User user) {
-//        SimpleMailMessage mailMessage
-//                = new SimpleMailMessage();
-//
-//        // Setting up necessary details
-//        mailMessage.setFrom(sender);
-//        mailMessage.setTo(user.getPhoneNumber());
-//        mailMessage.setSubject("");
-//        mailMessage.setText("CLICK_LINK" + API + API_PORT + "/api/auth/verification-email/" + user.getEmail());
-//
-//        // Sending the mail
-//        javaMailSender.send(mailMessage);
+        System.out.println(user);
     }
 
 }
