@@ -89,8 +89,7 @@ public class RoleServiceImpl implements RoleService {
                         .collect(Collectors.toList());
     }
 
-    private RoleDTO mapRoleToRoleDTO(
-            Role role) {
+    private RoleDTO mapRoleToRoleDTO(Role role) {
         return new RoleDTO(
                 role.getId(),
                 role.getName(),
