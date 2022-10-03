@@ -6,7 +6,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +19,6 @@ import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
-import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
 
 import java.util.Date;
@@ -26,9 +29,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Value("${jwt.access.key}")
     private String ACCESS_TOKEN_KEY;
-
-    //    @Value("${server.port}")
-//    private String API_PORT = "8090";
 
     private final String API = " http://localhost:";
 
@@ -42,37 +42,28 @@ public class AuthServiceImpl implements AuthService {
     private long REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
-//    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-//    private final JavaMailSender javaMailSender;
-//    private final AuthenticationManager authenticationManager;
-
-//    @Value("${spring.mail.username}")
-//    private String sender;
 
     public AuthServiceImpl(UserRepository userRepository,
+                           @Lazy AuthenticationManager authenticationManager,
                            @Lazy PasswordEncoder passwordEncoder
-//                           @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender javaMailSender,
-//                           @Lazy AuthenticationManager authenticationManager,
-//                           RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
-//        this.javaMailSender = javaMailSender;
-//        this.authenticationManager = authenticationManager;
-//        this.roleRepository = roleRepository;
     }
 
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return userRepository
-//                .findByPhoneNumber(username)
-//                .orElseThrow(
-//                        () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
-//
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository
+                .findByPhoneNumber(username)
+                .orElseThrow(
+                        () -> RestException.restThrow(String.format("%s email not found", username), HttpStatus.UNAUTHORIZED));
+
+    }
 
     @Override
     @Transactional
@@ -113,14 +104,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
 
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        signDTO.getPhoneNumber(),
-//                        signDTO.getPassword()
-//                ));
-//
-//        User user = (User) authentication.getPrincipal();
-        User user = new User(signDTO.getPhoneNumber(),signDTO.getPassword());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        signDTO.getPhoneNumber(),
+                        signDTO.getPassword()
+                ));
+
+        User user = (User) authentication.getPrincipal();
         String accessToken = generateToken(user.getPhoneNumber(), true);
         String refreshToken = generateToken(user.getPhoneNumber(), false);
 
