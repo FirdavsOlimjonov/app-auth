@@ -86,7 +86,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        return ApiResult.successResponse(true);
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+
+
+            Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(employeeDTO.getPhoneNumber());
+
+            employee.setFirstName(employeeDTO.getFirstName());
+            employee.setLastName(employeeDTO.getLastName());
+            employee.getUser().setPhoneNumber(employeeDTO.getPhoneNumber());
+
+            Optional<Role> optionalRole = roleRepository.findById(employeeDTO.getRoleId());
+            if (optionalRole.isEmpty()) {
+                throw RestException.restThrow("role does not exist", HttpStatus.NOT_FOUND);
+            }
+            employee.setRole(optionalRole.get());
+
+        }
+        throw RestException.restThrow("does not exist", HttpStatus.NOT_FOUND);
     }
 
 
