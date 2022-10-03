@@ -178,9 +178,4 @@ public class ClientServiceImpl implements ClientService {
         return query.toString();
     }
 
-//    TODO
-    private ClientDTO sort(ClientDTO clientDTO){
-
-        return null;
-    }
 }
