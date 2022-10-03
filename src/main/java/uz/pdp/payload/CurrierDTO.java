@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class CurrierDTO {
 
     @NotNull
-    private LocalDate birthDate;
+    private Long birthDate;
 
     @NotBlank
     private String firstName;

@@ -65,7 +65,6 @@ public class ClientServiceImpl implements ClientService {
         return ApiResult.successResponse(true);
     }
 
-
     @Override
     public ApiResult<Boolean> delete(UUID id) {
         if (!clientRepository.existsById(id))
@@ -73,5 +72,6 @@ public class ClientServiceImpl implements ClientService {
 
         return ApiResult.successResponse(true);
     }
+
 }
 
