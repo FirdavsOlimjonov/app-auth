@@ -1,17 +1,17 @@
 package uz.pdp.payload;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import uz.pdp.entity.Role;
-import uz.pdp.entity.User;
 
 @Data
+@AllArgsConstructor
 public class EmployeeDTO {
 
     private String firstName;
 
     private String lastName;
 
-    private User user;
+    private String phoneNumber;
 
-    private Role role;
+    private Integer roleId;
 }

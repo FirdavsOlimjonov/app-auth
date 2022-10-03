@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import uz.pdp.entity.Employee;
 import uz.pdp.payload.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.EmployeeDTO;
 
 
 import java.util.List;
@@ -11,14 +12,14 @@ import java.util.UUID;
 
 public interface EmployeeService {
 
-    ResponseEntity<List<Employee>> getAll();
+    ApiResult<List<EmployeeDTO>> getAll();
 
-    ResponseEntity<Employee> getOne(UUID id);
+    ApiResult<EmployeeDTO> getOne(UUID id);
 
     ApiResult<String> add(AddEmployeeDTO employee);
 
-    ResponseEntity<Boolean> edit(Employee employee, UUID id);
+    ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id);
 
-    ResponseEntity<Boolean> delete(UUID id);
+    ApiResult<String> delete(UUID id);
 
 }

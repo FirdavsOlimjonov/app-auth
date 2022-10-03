@@ -1,6 +1,7 @@
 package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.EmployeeDTO;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
@@ -20,6 +22,7 @@ import uz.pdp.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,17 +40,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String defaultPassword;
 
     @Override
-    public ResponseEntity<List<Employee>> getAll() {
+    public ApiResult<List<EmployeeDTO>> getAll() {
         List<Employee> all = employeeRepository.findAll();
-        return ResponseEntity.ok(all);
+        List<EmployeeDTO> employeeDTOList = mapEmployeesToEmployeeDTOList(all);
+
+        return ApiResult.successResponse(employeeDTOList);
     }
 
     @Override
-    public ResponseEntity<Employee> getOne(UUID id) {
-        Optional<Employee> employeeOptional = employeeRepository.findById(id);
-        return employeeOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ApiResult<EmployeeDTO> getOne(UUID id) {
+        Optional<Employee> employeeDTO = employeeRepository.findById(id);
+        if (employeeDTO.isPresent()) {
+            return ApiResult.successResponse(mapEmployeeToEmployeeDTO(employeeDTO.get()));
+        }
 
+        throw RestException.restThrow("id does not exist", HttpStatus.NOT_FOUND);
     }
+
 
     @Override
     public ApiResult<String> add(AddEmployeeDTO employeeDTO) {
@@ -75,28 +84,39 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
-
-        if (employeeRepository.existsById(id)) {
-
-            if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber()))
-                return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-
-            employeeRepository.save(employee);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        return ApiResult.successResponse(true);
     }
 
 
     @Override
-    public ResponseEntity<Boolean> delete(UUID id) {
-        if (employeeRepository.existsById(id)) {
+    public ApiResult<String> delete(UUID id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isPresent()) {
             employeeRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+            return ApiResult.successResponse("deleted");
         }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        throw RestException.restThrow("id does not exist", HttpStatus.CONFLICT);
     }
+
+
+    private List<EmployeeDTO> mapEmployeesToEmployeeDTOList(List<Employee> employees) {
+        return
+                employees
+                        .stream()
+                        .map(this::mapEmployeeToEmployeeDTO)
+                        .collect(Collectors.toList());
+    }
+
+    private EmployeeDTO mapEmployeeToEmployeeDTO(Employee employee) {
+        return new EmployeeDTO(
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getUser().getPhoneNumber(),
+                employee.getRole().getId()
+        );
+    }
+
 }
 

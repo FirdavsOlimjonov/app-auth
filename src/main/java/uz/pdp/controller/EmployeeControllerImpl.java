@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.Employee;
 import uz.pdp.payload.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.EmployeeDTO;
 import uz.pdp.service.EmployeeService;
 
 import java.util.List;
@@ -18,12 +19,12 @@ public class EmployeeControllerImpl implements EmployeeController{
     private final EmployeeService employeeService;
 
     @Override
-    public ResponseEntity<List<Employee>> getAll() {
+    public ApiResult<List<EmployeeDTO>> getAll() {
         return employeeService.getAll();
     }
 
     @Override
-    public ResponseEntity<Employee> getOne(UUID id) {
+    public ApiResult<EmployeeDTO> getOne(UUID id) {
         return employeeService.getOne(id);
     }
 
@@ -33,12 +34,12 @@ public class EmployeeControllerImpl implements EmployeeController{
     }
 
     @Override
-    public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
-        return employeeService.edit(employee, id);
+    public ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id) {
+        return employeeService.edit(employeeDTO, id);
     }
 
     @Override
-    public ResponseEntity<Boolean> delete(UUID id) {
+    public ApiResult<String> delete(UUID id) {
         return employeeService.delete(id);
     }
 }

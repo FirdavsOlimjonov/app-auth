@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.pdp.entity.Employee;
 import uz.pdp.payload.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.EmployeeDTO;
 import uz.pdp.util.RestConstants;
 
 
@@ -17,19 +18,19 @@ public interface EmployeeController {
     String BASE_PATH = RestConstants.SERVICE_BASE_PATH + "employee";
 
     @GetMapping("/list")
-    ResponseEntity<List<Employee>> getAll();
+    ApiResult<List<EmployeeDTO>> getAll();
 
     @GetMapping("/{id}")
-    ResponseEntity<Employee> getOne(@PathVariable UUID id);
+    ApiResult<EmployeeDTO> getOne(@PathVariable UUID id);
 
     @PostMapping
     ApiResult<String> add(@RequestBody AddEmployeeDTO employee);
 
     @PutMapping("/{id}")
-    ResponseEntity<Boolean> edit(@RequestBody Employee employee, @PathVariable UUID id);
+    ApiResult<Boolean> edit(@RequestBody EmployeeDTO employeeDTO, @PathVariable UUID id);
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Boolean> delete(@PathVariable UUID id);
+    ApiResult<String> delete(@PathVariable UUID id);
 
 
 }
