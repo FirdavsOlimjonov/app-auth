@@ -13,7 +13,7 @@ public class ProfileControllerImpl implements ProfileController{
 
     @Override
     public ApiResult<Client> getClientProfile(String token) {
-        return null;
+        return profileService.getClientProfile(token);
     }
 
     @Override
