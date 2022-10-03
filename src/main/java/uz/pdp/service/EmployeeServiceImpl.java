@@ -1,16 +1,22 @@
 package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Employee;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.entity.Role;
+import uz.pdp.entity.User;
+import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.AddEmployeeDTO;
+import uz.pdp.payload.ApiResult;
 import uz.pdp.repository.EmployeeRepository;
+import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,27 +29,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final UserRepository userRepository;
 
+    private final UserService userService;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.defaultPassword}")
+    private String defaultPassword;
+
     @Override
     public ResponseEntity<List<Employee>> getAll() {
         List<Employee> all = employeeRepository.findAll();
         return ResponseEntity.ok(all);
-
-//        List<EmployeeDTO> list = new ArrayList<>();
-//
-//        for (Employee employee : all) {
-//
-//            EmployeeDTO employeeDTO = new EmployeeDTO();
-//            employeeDTO.setFirstName(employee.getUser().getFirstName());
-//            employeeDTO.setLastName(employee.getUser().getLastName());
-//            employeeDTO.setRole(employee.getRole());
-//            employeeDTO.setMiddleName(employee.getUser().getMiddleName());
-//            employeeDTO.setPhoneNumber(employee.getUser().getPhoneNumber());
-//
-//            list.add(employeeDTO);
-//
-//            return ResponseEntity.ok(list);
-//        }
-
     }
 
     @Override
@@ -51,77 +47,44 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         return employeeOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
-
-//        Optional<Employee> employeeDTO = employeeRepository.findEmployeeByUserId(id);
-//        if (employeeDTO.isPresent()) {
-//            Employee employee = employeeDTO.get();
-//            EmployeeDTO employeeDTO1 = new EmployeeDTO();
-//            employeeDTO1.setFirstName(employee.getUser().getFirstName());
-//            employeeDTO1.setLastName(employee.getUser().getLastName());
-//            employeeDTO1.setRole(employee.getRole());
-//            employeeDTO1.setMiddleName(employee.getUser().getMiddleName());
-//            employeeDTO1.setPhoneNumber(employee.getUser().getPhoneNumber());
-//            return ResponseEntity.ok(employeeDTO1);
-//        }
     }
 
-//    @Override
-//    public ResponseEntity<Boolean> add(EmployeeDTO employeeDTO) {
-//        if (employeeRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
-//            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-//        }
-//
-//        Employee employee = new Employee();
-//
-//        employee.setFirstName(employeeDTO.getFirstName());
-//        employee.setLastName(employeeDTO.getLastName());
-//        employee.setMiddleName(employeeDTO.getMiddleName());
-//        employee.setRole_String(employeeDTO.getRole_String());
-//        employee.setPhoneNumber(employeeDTO.getPhoneNumber());
-//
-//        employeeRepository.save(employee);
-//        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-//    }
-
     @Override
-    public ResponseEntity<Boolean> add(Employee employee) {
-        if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber())) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-        }
+    public ApiResult<String> add(AddEmployeeDTO employeeDTO) {
+        if (employeeRepository.existsByUser_PhoneNumber(employeeDTO.getPhoneNumber()))
+            throw RestException.restThrow("Already exists", HttpStatus.CONFLICT);
+
+        User user = userService
+                .findByPhoneNumberIfNotCreate(
+                        employeeDTO.getPhoneNumber(),
+                        passwordEncoder.encode(defaultPassword));
+
+        Role role = roleRepository
+                .findById(employeeDTO.getRoleId())
+                .orElseThrow(() ->
+                        RestException.restThrow("Bunday role mavjud emas",
+                                HttpStatus.BAD_REQUEST));
+
+        Employee employee = new Employee(
+                employeeDTO.getFirstName(),
+                employeeDTO.getLastName(),
+                user,
+                role);
         employeeRepository.save(employee);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ApiResult.successResponse("Hammasi ok");
     }
 
     @Override
     public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
 
         if (employeeRepository.existsById(id)) {
-            if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber())) {
+
+            if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber()))
                 return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-            }
 
             employeeRepository.save(employee);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         }
-
-//        if (employeeRepository.existsById(id)) {
-//
-//            List<Employee> all = employeeRepository.findAll();
-//
-//            for (Employee employee1 : all) {
-//                if (employee1.getUser().getId().equals(employee.getUser().getId())) {
-//                    if (employee1.getUser().getPhoneNumber().equals(employee.getUser().getPhoneNumber())) {
-//                        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-//                    }
-//
-//                    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-//
-//                }
-//
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//
-//            }
-//        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
