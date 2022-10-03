@@ -6,9 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import uz.pdp.payload.add_DTO.AddClientDTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -24,4 +26,15 @@ public class Client extends AbsUser {
     @Column(nullable = false)
     private String name;
 
+    public Client(User user, Long birthDate, String name) {
+        super(user);
+        this.birthDate = birthDate;
+        this.name = name;
+    }
+
+    public Client(User user, AddClientDTO addClientDTO) {
+        super(user);
+        this.birthDate = addClientDTO.getBirthDate();
+        this.name = addClientDTO.getName();
+    }
 }
