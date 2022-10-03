@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ApiResult<EmployeeDTO> getOne(UUID id) {
+    public ApiResult<EmployeeDTO> get(UUID id) {
         Optional<Employee> employeeDTO = employeeRepository.findById(id);
         if (employeeDTO.isPresent()) {
             return ApiResult.successResponse(mapEmployeeToEmployeeDTO(employeeDTO.get()));
@@ -85,6 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id) {
+
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
@@ -101,6 +102,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 throw RestException.restThrow("role does not exist", HttpStatus.NOT_FOUND);
             }
             employee.setRole(optionalRole.get());
+            employeeRepository.save(employee);
+            return ApiResult.successResponse(true);
 
         }
         throw RestException.restThrow("does not exist", HttpStatus.NOT_FOUND);

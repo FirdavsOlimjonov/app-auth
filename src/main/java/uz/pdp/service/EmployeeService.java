@@ -14,7 +14,7 @@ public interface EmployeeService {
 
     ApiResult<List<EmployeeDTO>> getAll();
 
-    ApiResult<EmployeeDTO> getOne(UUID id);
+    ApiResult<EmployeeDTO> get(UUID id);
 
     ApiResult<String> add(AddEmployeeDTO employee);
 

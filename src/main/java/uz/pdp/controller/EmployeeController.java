@@ -21,7 +21,7 @@ public interface EmployeeController {
     ApiResult<List<EmployeeDTO>> getAll();
 
     @GetMapping("/{id}")
-    ApiResult<EmployeeDTO> getOne(@PathVariable UUID id);
+    ApiResult<EmployeeDTO> get(@PathVariable UUID id);
 
     @PostMapping
     ApiResult<String> add(@RequestBody AddEmployeeDTO employee);

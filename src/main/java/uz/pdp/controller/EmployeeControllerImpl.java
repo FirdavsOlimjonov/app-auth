@@ -24,8 +24,8 @@ public class EmployeeControllerImpl implements EmployeeController{
     }
 
     @Override
-    public ApiResult<EmployeeDTO> getOne(UUID id) {
-        return employeeService.getOne(id);
+    public ApiResult<EmployeeDTO> get(UUID id) {
+        return employeeService.get(id);
     }
 
     @Override
