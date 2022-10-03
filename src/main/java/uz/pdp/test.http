@@ -6,4 +6,14 @@ Content-Type: application/json
   "phoneNumber": "998930850236",
   "password":"root123"
 }
+###
+POST http://localhost:8087/currier/add
+Content-Type: application/json
 
+{
+  "birthDate": "2013-09-30",
+  "firstName": "test_f71341948a79",
+  "lastName": "test_1684fb7f4a3e",
+  "carNumber": "test_70edb9ab606d",
+  "driverLicense": "test_e6cc0dda03ea"
+}

@@ -66,9 +66,14 @@ public class CurrierServiceImpl implements CurrierService {
 
     @Override
     public ApiResult<List<CurrierDTO>> getCurrierByStatus(String status) {
-        Optional<Object> all = currierRepository.findAllByCurrierStatusEnum(status);
         return null;
     }
+
+    //    @Override
+//    public ApiResult<List<CurrierDTO>> getCurrierByStatus(String status) {
+//        Optional<Object> all = currierRepository.findAllByCurrierStatusEnum(status);
+//        return null;
+//    }
     public Currier mapToCurrier(CurrierDTO currierDTO) {
         return new Currier(currierDTO.getBirthDate(),
                 currierDTO.getFirstName(),
