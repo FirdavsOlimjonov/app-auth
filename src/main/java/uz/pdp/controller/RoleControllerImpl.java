@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.enums.PermissionEnum;
-import uz.pdp.payload.AddRoleDTO;
+import uz.pdp.payload.add_DTO.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
 import uz.pdp.service.RoleServiceImpl;

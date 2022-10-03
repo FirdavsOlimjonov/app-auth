@@ -1,4 +1,4 @@
-package uz.pdp.payload;
+package uz.pdp.payload.add_DTO;
 
 import lombok.Getter;
 

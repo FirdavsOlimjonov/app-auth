@@ -6,12 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Client;
 import uz.pdp.entity.User;
-import uz.pdp.payload.ClientDTO;
+import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.add_DTO.AddClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,21 +26,21 @@ public class ClientServiceImpl implements ClientService {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<List<Client>> getAll() {
+    public ApiResult<List<ClientDTO>> getAll() {
         List<Client> all = clientRepository.findAll();
         return ResponseEntity.ok(all);
 
     }
 
     @Override
-    public ResponseEntity<Client> getOne(UUID id) {
-        Optional<Client> optionalClient = clientRepository.findById(id);
-        return optionalClient.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ApiResult<ClientDTO> get(UUID id) {
+
+        return ApiResult.successResponse(ClientDTO.mapping(clientRepository.findById(id)
+                .orElseThrow(() -> RestException.restThrow("", HttpStatus.NOT_FOUND))));
     }
 
-
     @Override
-    public ResponseEntity<Boolean> save(ClientDTO clientDTO) {
+    public ApiResult<Boolean> add(AddClientDTO clientDTO) {
         if (userRepository.existsByPhoneNumber(clientDTO.getPhoneNumber()))
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
 
@@ -52,7 +54,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResponseEntity<Boolean> edit(Client client, UUID id) {
+    public ApiResult<Boolean> edit(ClientDTO clientDTO) {
 
         if (clientRepository.existsById(id)) {
             if (userRepository.existsByPhoneNumber(client.getUser().getPhoneNumber())) {
@@ -65,6 +67,7 @@ public class ClientServiceImpl implements ClientService {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
 
 
     @Override

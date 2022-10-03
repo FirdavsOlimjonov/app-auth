@@ -10,7 +10,7 @@ import uz.pdp.entity.Employee;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
-import uz.pdp.payload.AddEmployeeDTO;
+import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.RoleRepository;
