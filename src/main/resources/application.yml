@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: team7
+    active: dev
 
 
 eureka:
