@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface ClientController {
 
     String CLIENT_CONTROLLER_BASE_PATH = RestConstants.SERVICE_BASE_PATH + "client";
-    String GET_ALL_PATH = "/get-all";
+    String GET_ALL_PATH = "/get-all";///
     String GET_BY_ID_PATH = "/{id}";
     String DELETE_BY_ID_PATH = "/{id}";
 
