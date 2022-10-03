@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
@@ -35,5 +36,10 @@ public class AuthControllerImpl implements AuthController {
     @Override
     public ApiResult<TokenDTO> refreshToken(String accessToken, String refreshToken) {
         return authService.refreshToken(accessToken, refreshToken);
+    }
+
+    @Override
+    public ApiResult<User> getUserByToken(String token) {
+        return authService.getUserByToken(token);
     }
 }
