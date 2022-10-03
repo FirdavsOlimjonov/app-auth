@@ -17,4 +17,6 @@ public interface CurrierService {
     ApiResult<Boolean> edit(CurrierDTO currierDTO, UUID id);
 
     ApiResult<CurrierDTO> getCurrier(UUID id);
+
+    ApiResult<List<CurrierDTO>> getCurrierByStatus(String status);
 }

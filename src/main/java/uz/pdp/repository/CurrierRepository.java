@@ -13,4 +13,7 @@ public interface CurrierRepository extends JpaRepository<Currier, UUID> {
     boolean existsByDriverLicense(String driverLicense);
 
     Optional<Currier> findById(UUID id);
+
+    Optional<Object> findAllByCurrierStatusEnum(String status);
+
 }

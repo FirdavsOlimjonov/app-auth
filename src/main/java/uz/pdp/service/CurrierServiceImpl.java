@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Currier;
-import uz.pdp.entity.Role;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.CurrierDTO;
-import uz.pdp.payload.RoleDTO;
 import uz.pdp.repository.CurrierRepository;
 
 import java.util.List;
@@ -66,6 +64,11 @@ public class CurrierServiceImpl implements CurrierService {
         return ApiResult.successResponse(mapCurrierTOCurrierDto(currier));
     }
 
+    @Override
+    public ApiResult<List<CurrierDTO>> getCurrierByStatus(String status) {
+        Optional<Object> all = currierRepository.findAllByCurrierStatusEnum(status);
+        return null;
+    }
     public Currier mapToCurrier(CurrierDTO currierDTO) {
         return new Currier(currierDTO.getBirthDate(),
                 currierDTO.getFirstName(),

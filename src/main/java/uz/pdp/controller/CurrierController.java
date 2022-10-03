@@ -10,16 +10,17 @@ import uz.pdp.payload.EmployeeDTO;
 import java.util.List;
 import java.util.UUID;
 
+
 @RequestMapping("/currier")
 public interface CurrierController {
+    @PostMapping("/add")
+    ApiResult<CurrierDTO> add(@RequestBody CurrierDTO currierDTO);
+
     @GetMapping("/getAll")
     ApiResult<List<CurrierDTO>> getAll();
 
     @GetMapping("/getOne/{id}")
     ApiResult<CurrierDTO> getOne(@PathVariable UUID id);
-
-    @PostMapping("/add")
-    ApiResult<CurrierDTO> add(@RequestBody CurrierDTO currierDTO);
 
     @PutMapping("/edit/{id}")
     ApiResult<Boolean> edit(@RequestBody CurrierDTO currierDTO, @PathVariable UUID id);

@@ -2,14 +2,10 @@ server:
   port: 8090
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/auth_db
     username: postgres
-    password: 1234
+    password: 8899
 
-  driver-class-name=com:
-    mysql:
-      jdbc:
-        Driver:
   jpa:
     hibernate:
       ddl-auto: create

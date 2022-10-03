@@ -19,6 +19,11 @@ import java.util.UUID;
 public class CurrierControllerImpl implements CurrierController{
     private final CurrierServiceImpl currierService;
     @Override
+    public ApiResult<CurrierDTO> add(CurrierDTO currierDTO) {
+        return currierService.add(currierDTO);
+    }
+
+    @Override
     public ApiResult<List<CurrierDTO>> getAll() {
         return currierService.getCurrierList();
     }
@@ -26,11 +31,6 @@ public class CurrierControllerImpl implements CurrierController{
     @Override
     public ApiResult<CurrierDTO> getOne(UUID id) {
         return currierService.getCurrier(id);
-    }
-
-    @Override
-    public ApiResult<CurrierDTO> add(CurrierDTO currierDTO) {
-        return currierService.add(currierDTO);
     }
 
     @Override
