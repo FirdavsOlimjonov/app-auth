@@ -28,7 +28,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
 
 //    @Value("${order-service.url}")
-    String ORDER_SERVICE_URL = "http://localhost:8090/api/order/order-count";
+    String ORDER_SERVICE_URL = "http://localhost:8091/api/order/order-count";
 
     @Override
     public ApiResult<List<ClientDTO>> getAllClients(ViewDTO viewDTO, int page, int size) {
