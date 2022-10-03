@@ -42,7 +42,6 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
-
     public User(String phoneNumber, String password) {
         this.phoneNumber = phoneNumber;
         this.password = password;
