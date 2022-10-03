@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-@RequestMapping("/currier")
+@RequestMapping("api/currier")
 public interface CurrierController {
     @PostMapping("/add")
     ApiResult<CurrierDTO> add(@RequestBody CurrierDTO currierDTO);

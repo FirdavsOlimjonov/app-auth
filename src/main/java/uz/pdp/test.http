@@ -7,7 +7,7 @@ Content-Type: application/json
   "password":"root123"
 }
 ###
-POST http://localhost:8087/currier/add
+POST http://localhost:8087/api/currier/add
 Content-Type: application/json
 
 {
