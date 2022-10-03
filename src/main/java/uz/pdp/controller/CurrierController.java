@@ -7,6 +7,7 @@ import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.CurrierDTO;
 import uz.pdp.payload.EmployeeDTO;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("api/currier")
 public interface CurrierController {
     @PostMapping("/add")
-    ApiResult<CurrierDTO> add(@RequestBody CurrierDTO currierDTO);
+    ApiResult<CurrierDTO> add(@Valid @RequestBody CurrierDTO currierDTO);
 
     @GetMapping("/getAll")
     ApiResult<List<CurrierDTO>> getAll();
