@@ -8,11 +8,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import uz.pdp.entity.template.AbsUUIDEntity;
 import uz.pdp.util.UserFields;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -23,7 +21,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate // y we need this?
 @DynamicInsert
-public class User extends AbsUUIDEntity implements UserDetails {
+public class User implements UserDetails {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;

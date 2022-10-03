@@ -5,14 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import uz.pdp.entity.enums.CurrierStatusEnum;
-import uz.pdp.entity.template.AbsUUIDEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -20,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Currier  extends AbsUser {
+public class Currier extends AbsUser {
 
     @Column(nullable = false)
     private Long birthDate;
