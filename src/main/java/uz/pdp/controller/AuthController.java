@@ -5,6 +5,7 @@ import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
+import uz.pdp.util.RestConstants;
 
 import javax.validation.Valid;
 
@@ -12,8 +13,8 @@ import javax.validation.Valid;
 @RequestMapping(path = AuthController.AUTH_CONTROLLER_BASE_PATH)
 public interface AuthController {
 
-    String AUTH_CONTROLLER_BASE_PATH = "/api/auth";
-    String SIGN_IN_PATH = "/sign-in";
+    String AUTH_CONTROLLER_BASE_PATH = RestConstants.SERVICE_BASE_PATH + "auth";
+    String SIGN_IN_FOR_EMPLOYEE_PATH = "/sign-in";
     String SIGN_UP_PATH = "/sign-up";
     String VERIFICATION_PATH = "/verification-phone-number/{phoneNumber}";
     String REFRESH_TOKEN_PATH = "/refresh-token";
@@ -28,7 +29,7 @@ public interface AuthController {
     ApiResult<?> verificationPhoneNumber(@PathVariable String phoneNumber);
 
 
-    @PostMapping(value = SIGN_IN_PATH)
+    @PostMapping(value = SIGN_IN_FOR_EMPLOYEE_PATH)
     ApiResult<TokenDTO> signIn(@Valid @RequestBody SignDTO signDTO);
 
 

@@ -14,4 +14,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     Optional<Employee> findEmployeeByUserId(UUID uuid);
 
+    boolean existsByUser_PhoneNumber(String user_phoneNumber);
+
 }

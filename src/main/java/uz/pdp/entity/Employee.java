@@ -38,34 +38,10 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Role role;
 
-    public String getPassword() {
-        return user.getPassword();//
+    public Employee(String firstName, String lastName, User user, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.user = user;
+        this.role = role;
     }
-
-    public boolean isAccountNonExpired() {
-        return user.isAccountNonExpired();
-    }
-
-    public boolean isAccountNonLocked() {
-        return user.isAccountNonLocked();
-    }
-
-    public boolean isCredentialsNonExpired() {
-        return user.isCredentialsNonExpired();
-    }
-
-    public boolean isEnabled() {
-        return user.isEnabled();
-    }
-
-//   @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return role.getPermissions();
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return this.user.getPhoneNumber();
-//    }
-
 }
