@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Employee extends AbsUUIDEntity {
+public class Employee extends AbsUser {
 
     @Column(nullable = false)
     private String firstName;
@@ -26,17 +26,14 @@ public class Employee extends AbsUUIDEntity {
     @Column(nullable = false)
     private String lastName;
 
-    @JoinColumn(unique = true)
-    @OneToOne(optional = false)
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Role role;
 
     public Employee(String firstName, String lastName, User user, Role role) {
+        super(user);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.user = user;
         this.role = role;
     }
 }

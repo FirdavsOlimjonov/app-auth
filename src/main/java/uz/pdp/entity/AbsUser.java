@@ -36,6 +36,9 @@ public abstract class AbsUser implements UserDetails {
         this.id = id;
         this.user = new User(phoneNumber);
     }
+    public AbsUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

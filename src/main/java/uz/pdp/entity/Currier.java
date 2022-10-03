@@ -10,6 +10,7 @@ import uz.pdp.entity.enums.CurrierStatusEnum;
 import uz.pdp.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,14 +20,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Currier  extends AbsUUIDEntity {
-
-    @JoinColumn(unique = true)
-    @OneToOne(optional = false)
-    private User user;
+public class Currier  extends AbsUser {
 
     @Column(nullable = false)
-    private LocalDate birthDate;
+    private Long birthDate;
 
     @Column(nullable = false)
     private String firstName;
@@ -38,11 +35,12 @@ public class Currier  extends AbsUUIDEntity {
 
     private String driverLicense;
 
+    @NotNull
     private boolean online;
 
 
-    public Currier(User user, LocalDate birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
-        this.user = user;
+    public Currier(User user, Long birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
+        super(user);
         this.birthDate = birthDate;
         this.firstName = firstName;
         this.lastName = lastName;
