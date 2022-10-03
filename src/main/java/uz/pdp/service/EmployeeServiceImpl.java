@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import uz.pdp.entity.Employee;
 import uz.pdp.payload.EmployeeDTO;
 import uz.pdp.repository.EmployeeRepository;
+import uz.pdp.repository.UserRepository;
 
 
 import java.util.ArrayList;
@@ -20,9 +21,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
+    private final UserRepository userRepository;
+
     @Override
     public ResponseEntity<List<Employee>> getAll() {
         List<Employee> all = employeeRepository.findAll();
+        return ResponseEntity.ok(all);
 
 //        List<EmployeeDTO> list = new ArrayList<>();
 //
@@ -39,11 +43,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 //
 //            return ResponseEntity.ok(list);
 //        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
     @Override
     public ResponseEntity<Employee> getOne(UUID id) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+        return employeeOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
+
 //        Optional<Employee> employeeDTO = employeeRepository.findEmployeeByUserId(id);
 //        if (employeeDTO.isPresent()) {
 //            Employee employee = employeeDTO.get();
@@ -55,7 +63,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 //            employeeDTO1.setPhoneNumber(employee.getUser().getPhoneNumber());
 //            return ResponseEntity.ok(employeeDTO1);
 //        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 //    @Override
@@ -78,7 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Boolean> add(Employee employee) {
-        if (employeeRepository.existsByUserId(employee.getUser().getId())) {
+        if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber())) {
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
         }
         employeeRepository.save(employee);
@@ -87,6 +94,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
+
+        if (employeeRepository.existsById(id)) {
+            if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber())) {
+                return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
+            }
+
+            employeeRepository.save(employee);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }
+
 //        if (employeeRepository.existsById(id)) {
 //
 //            List<Employee> all = employeeRepository.findAll();
@@ -111,11 +128,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Boolean> delete(UUID id) {
-//        if (employeeRepository.existsById(id)) {
-//            employeeRepository.deleteById(id);
-//            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-//        }
-//
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

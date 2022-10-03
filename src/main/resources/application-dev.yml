@@ -1,16 +1,10 @@
 server:
   port: 8090
-
-
-order-service:
-  url: http://localhost:8761/api/order/order_count
-
 spring:
-
   datasource:
     url: jdbc:postgresql://localhost:5432/auth_db
     username: postgres
-    password: 1234qw
+    password: 2004
 
   driver-class-name=com:
     mysql:
@@ -18,7 +12,7 @@ spring:
         Driver:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -32,8 +26,7 @@ jwt:
     key: tHaX54Hwk^Ydfd()(+__$$%#%70OZ()BK8C1%T&hBnrzgqK287
     expiration-time: 60480000
 
-
-#app:
-#  admin:
-#    username: admin@codingbat.com
-#    password: root123
+app:
+  admin:
+     phoneNumber: +998930850236
+     password: root123
