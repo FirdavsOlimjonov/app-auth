@@ -25,7 +25,7 @@ public interface EmployeeController {
     ApiResult<String> add(@RequestBody AddEmployeeDTO employee);
 
     @PutMapping("/{id}")
-    ApiResult<Boolean> edit(@RequestBody EmployeeDTO employeeDTO, @PathVariable UUID id);
+    ApiResult<Boolean> edit(@RequestBody AddEmployeeDTO addEmployeeDTO, @PathVariable UUID id);
 
     @DeleteMapping("/{id}")
     ApiResult<String> delete(@PathVariable UUID id);

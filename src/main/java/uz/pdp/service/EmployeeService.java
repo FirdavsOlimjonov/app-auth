@@ -16,7 +16,7 @@ public interface EmployeeService {
 
     ApiResult<String> add(AddEmployeeDTO employee);
 
-    ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id);
+    ApiResult<Boolean> edit(AddEmployeeDTO addEmployeeDTO, UUID id);
 
     ApiResult<String> delete(UUID id);
 

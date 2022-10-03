@@ -82,20 +82,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id) {
+    public ApiResult<Boolean> edit(AddEmployeeDTO addEmployeeDTO, UUID id) {
+        if(employeeRepository.existsByUser_PhoneNumber(addEmployeeDTO.getPhoneNumber())
+                && !((employeeRepository.findByUser_PhoneNumber(addEmployeeDTO.getPhoneNumber()).getId()).equals(id))){
+            throw RestException.restThrow("phoneNumber already exists", HttpStatus.ALREADY_REPORTED);
+        }
+
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
 
 
-            Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(employeeDTO.getPhoneNumber());
+            Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(addEmployeeDTO.getPhoneNumber());
 
-            employee.setFirstName(employeeDTO.getFirstName());
-            employee.setLastName(employeeDTO.getLastName());
-            employee.getUser().setPhoneNumber(employeeDTO.getPhoneNumber());
+            employee.setFirstName(addEmployeeDTO.getFirstName());
+            employee.setLastName(addEmployeeDTO.getLastName());
+            employee.getUser().setPhoneNumber(addEmployeeDTO.getPhoneNumber());
 
-            Optional<Role> optionalRole = roleRepository.findById(employeeDTO.getRoleId());
+            Optional<Role> optionalRole = roleRepository.findById(addEmployeeDTO.getRoleId());
             if (optionalRole.isEmpty()) {
                 throw RestException.restThrow("role does not exist", HttpStatus.NOT_FOUND);
             }
