@@ -1,45 +1,50 @@
 package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import uz.pdp.entity.User;
+import org.springframework.web.client.RestTemplate;
+import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.filterPayload.*;
 import uz.pdp.payload.filterPayload.enums.FilterTypeEnum;
-import uz.pdp.repository.UserRepository;
-import uz.pdp.utils.Columns;
+import uz.pdp.repository.ClientRepository;
+import uz.pdp.utils.SearchingColumnsEnum;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
-    private final UserRepository userRepository;
+    private final RestTemplate restTemplate;
+
+    private final ClientRepository clientRepository;
+
+    @Value("${order-service.url}")
+    String ORDER_SERVICE_URL;
 
     @Override
-    public List<ClientDTO> getAllClients(ViewDTO viewDTO, int page, int size) {
+    public ApiResult<List<ClientDTO>> getAllClients(ViewDTO viewDTO, int page, int size) {
 
 
         StringBuilder query;
 
         query = new StringBuilder("""
                     WITH temp AS (
-                        SELECT u.id,
-                               u.first_name,
-                               u.last_name,
-                               u.middle_name,
+                        SELECT  CAST(c.id as varchar) id,
+                               c.name,
                                u.phone_number,
+                               0 AS order_count,
                                u.enabled
-                           FROM users u
+                           FROM client c
+                           LEFT JOIN users u ON u.id = c.user_id
                     """);
 
 /**
@@ -47,36 +52,74 @@ public class ClientServiceImpl implements ClientService {
  */
 
         if (Objects.nonNull(viewDTO)){
-            if (viewDTO.getFiltering().getFilterType() != null)
+            if (Objects.nonNull(viewDTO.getFiltering())
+                    && Objects.nonNull(viewDTO.getFiltering().getFilterType()))
                 query.append(filter(viewDTO.getFiltering()));
 
             query.append(") \n SELECT * FROM temp ");
 
-            if (!viewDTO.getSearching().isBlank())
+            if (Objects.nonNull(viewDTO.getSearching())
+                    && !viewDTO.getSearching().isBlank())
                 query.append(search(viewDTO.getSearching()));
 
-            if (!viewDTO.getSorting().isEmpty())
+            if (Objects.nonNull(viewDTO.getSorting())
+                    && !viewDTO.getSorting().isEmpty())
                 query.append(sort(viewDTO.getSorting()));
 
         }
 
-//        query
-//                .append(" LIMIT ")
-//                .append(size)
-//                .append(" OFFSET ")
-//                .append(page * size);
+        query
+                .append(" LIMIT ")
+                .append(size)
+                .append(" OFFSET ")
+                .append(page * size);
 
 
         System.out.println(query);
 
+        List<ClientDTOView> clientDTOViewList = clientRepository.getAllUsersByStringQuery(query.toString());
+
+/**
+ *  order service ga borib userlar orderlari sonini olib kelamiz
+ */
+        Map<UUID, Integer> userOrderCounts = getUserOrdersCount(clientDTOViewList);
+
+        if (Objects.isNull(userOrderCounts))
+            throw RestException.restThrow("Order Service returned wrong response", HttpStatus.SERVICE_UNAVAILABLE);
 
 
-        System.out.println(userRepository.getAllUsersByStringQuery(query.toString()));
+//        ClientDTOView va UserOrdersCount ni ClientDTO ga o'girib qaytaramiz
+        return ApiResult.successResponse(mapToClientDTO(userOrderCounts, clientDTOViewList));
+    }
 
 
+    private List<ClientDTO> mapToClientDTO(Map<UUID, Integer> userOrderCounts, List<ClientDTOView> clientDTOViewList){
 
+        List<ClientDTO> list = new ArrayList<>();
 
-        return new ArrayList<>();
+        for (ClientDTOView clientDTOView : clientDTOViewList) {
+            list.add(
+                    new ClientDTO(
+                            UUID.fromString(clientDTOView.getId()),
+                            clientDTOView.getName(),
+                            clientDTOView.getPhone_number(),
+                            userOrderCounts.get(UUID.fromString(clientDTOView.getId())),
+                            clientDTOView.getEnabled()));
+        }
+
+        return list;
+    }
+
+    private Map<UUID, Integer> getUserOrdersCount(List<ClientDTOView> clientDTOViewList){
+
+        Set<UUID> userIds = clientDTOViewList.stream().map(c -> UUID.fromString(c.getId())).collect(Collectors.toSet());
+
+        return Objects.requireNonNull(
+                restTemplate.exchange(
+                                ORDER_SERVICE_URL,
+                                HttpMethod.POST,
+                                new HttpEntity<>(userIds),
+                                new ParameterizedTypeReference<Map<UUID, Integer>>() {})).getBody();
     }
 
     private String filter(FilterDTO filterDTO) {
@@ -84,14 +127,14 @@ public class ClientServiceImpl implements ClientService {
         if (filterDTO.getFilterType() == FilterTypeEnum.ACTIVE)
             return " WHERE  u.enabled ";
         else
-            return " WHERE !u.enabled ";
+            return " WHERE u.enabled = false ";
     }
 
     private String search(String value) {
 
         StringBuilder query = new StringBuilder(" WHERE ");
 
-        Columns[] columns = Columns.values();
+        SearchingColumnsEnum[] columns = SearchingColumnsEnum.values();
 
 
         String column;
@@ -115,8 +158,6 @@ public class ClientServiceImpl implements ClientService {
 
     private String sort(List<SortingDTO> sortingDTOs) {
 
-
-
         StringBuilder query = new StringBuilder(" ORDER BY ");
 
         SortingDTO sortingDTO;
@@ -135,5 +176,11 @@ public class ClientServiceImpl implements ClientService {
         }
 
         return query.toString();
+    }
+
+//    TODO
+    private ClientDTO sort(ClientDTO clientDTO){
+
+        return null;
     }
 }

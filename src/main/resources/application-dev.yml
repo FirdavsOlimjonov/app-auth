@@ -1,8 +1,14 @@
 server:
   port: 8090
+
+
+order-service:
+  url: http://localhost:8761/api/order/order_count
+
 spring:
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/auth
+    url: jdbc:postgresql://localhost:5432/auth_db
     username: postgres
     password: 1234qw
 
@@ -25,6 +31,7 @@ jwt:
   refresh:
     key: tHaX54Hwk^Ydfd()(+__$$%#%70OZ()BK8C1%T&hBnrzgqK287
     expiration-time: 60480000
+
 
 #app:
 #  admin:

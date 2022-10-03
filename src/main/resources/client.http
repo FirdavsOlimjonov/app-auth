@@ -5,15 +5,16 @@ Content-Type: application/json
   "filtering": {
     "filterType": "ACTIVE"
   },
-  "searching": "a",
+  "searching": "2",
   "sorting": [
-    {
-      "columnName": "NAME",
-      "type": "ASC"
-    },
     {
       "columnName": "ORDER_COUNT",
       "type": "DESC"
+    },
+    {
+      "columnName": "ORDER_COUNT",
+      "type": "ASC"
     }
   ]
 }
+
