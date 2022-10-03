@@ -26,6 +26,7 @@ import java.util.Optional;
 public class JWTFilter extends OncePerRequestFilter {
     @Value("${jwt.access.key}")
     private String TOKEN_KEY;
+    private final String AUTHENTICATION_HEADER = "Authorization";
 
     private final UserRepository userRepository;
 

@@ -20,6 +20,7 @@ import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.TokenDTO;
 import uz.pdp.repository.UserRepository;
+import uz.pdp.security.JWTFilter;
 
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +45,9 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
+    private final JWTFilter jwtFilter;
+
+    //    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AuthServiceImpl(UserRepository userRepository,
@@ -51,6 +55,7 @@ public class AuthServiceImpl implements AuthService {
                            @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
+        this.jwtFilter = jwtFilter;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -168,6 +173,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         throw RestException.restThrow("ACCESS_TOKEN_NOT_EXPIRED", HttpStatus.UNAUTHORIZED);
+    }
+
+    @Override
+    public ApiResult<User> getUserByToken(String token) {
+        String phoneNumber = jwtFilter.getEmailFromToken(token);
+        return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> RestException.restThrow("NOT_FOUND",HttpStatus.NOT_FOUND)));
     }
 
     public String generateToken(String email, boolean accessToken) {
