@@ -1,10 +1,18 @@
-POST http://localhost/api/auth/v1/employee/add
+POST http://localhost/api/auth/v1/employee
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODUwMjM2IiwiaWF0IjoxNjY0NzgwODMxLCJleHAiOjE2NjQ4NTI4MzF9._Pc1Rb1r-mlDi2nvrKWKNREgungEhPAjLk5sAmbtROx4Vr4N4PiKxWnYlk3a9RhGIvCOn4YJfVujky8HALnfFQ
 
 {
-  "firstName": "test_376112983319",
-  "lastName": "test_d18f8e16732d",
-  "phoneNumber": "+998996791137",
+  "firstName": "leo",
+  "lastName": "messi",
+  "phoneNumber": "+998979852339",
   "roleId": 1
 }
+
+###
+GET http://localhost/api/auth/v1/employee/list
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODUwMjM2IiwiaWF0IjoxNjY0NzgwODMxLCJleHAiOjE2NjQ4NTI4MzF9._Pc1Rb1r-mlDi2nvrKWKNREgungEhPAjLk5sAmbtROx4Vr4N4PiKxWnYlk3a9RhGIvCOn4YJfVujky8HALnfFQ
+
+###
+DELETE http://localhost/api/auth/v1/employee/2e3a4f1c-3ccc-4234-8240-acbd4814c954
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODUwMjM2IiwiaWF0IjoxNjY0NzgwODMxLCJleHAiOjE2NjQ4NTI4MzF9._Pc1Rb1r-mlDi2nvrKWKNREgungEhPAjLk5sAmbtROx4Vr4N4PiKxWnYlk3a9RhGIvCOn4YJfVujky8HALnfFQ

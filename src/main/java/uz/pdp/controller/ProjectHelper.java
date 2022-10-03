@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.response_DTO.EmployeeDTO;
 
 @RequestMapping(path = ProjectHelper.PROJECT_HELPER_CONTROLLER_BASE_PATH)
 public interface ProjectHelper {
