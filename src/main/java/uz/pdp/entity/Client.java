@@ -1,18 +1,14 @@
 package uz.pdp.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import uz.pdp.entity.template.AbsUUIDEntity;
 
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity
 @Getter
@@ -21,14 +17,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Client extends AbsUUIDEntity {
+public class Client extends AbsUser {
 
-    @JoinColumn(unique = true)
-    @OneToOne(optional = false)
-    private User user;
-
-    private LocalDate birthDate;
+    private Long birthDate;
 
     @Column(nullable = false)
     private String name;
+
 }

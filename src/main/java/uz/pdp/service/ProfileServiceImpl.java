@@ -8,7 +8,7 @@ import uz.pdp.entity.Client;
 import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.ClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.UserRepository;
 

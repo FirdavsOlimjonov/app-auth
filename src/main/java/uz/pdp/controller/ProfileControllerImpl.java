@@ -3,7 +3,7 @@ package uz.pdp.controller;
 import lombok.RequiredArgsConstructor;
 import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.ClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.service.ProfileService;
 
 @RequiredArgsConstructor
