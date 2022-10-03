@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Currier;
+import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.CurrierDTO;
 import uz.pdp.repository.CurrierRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,15 +18,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CurrierServiceImpl implements CurrierService {
     private final CurrierRepository currierRepository;
+    private final UserService userService;
+
     @Override
     public ApiResult<CurrierDTO> add(CurrierDTO currierDTO) {
-        if(currierRepository.existsByCarNumber(currierDTO.getCarNumber()) || currierRepository.existsByDriverLicense(currierDTO.getDriverLicense())){
-            throw RestException.restThrow("Such currier already exists", HttpStatus.CONFLICT);
-        }
+
+        carNumberOrDriverLicenseExistsThrow(currierDTO);
+
         Currier currier = mapToCurrier(currierDTO);
+
         currierRepository.save(currier);
         return ApiResult.successResponse(mapCurrierTOCurrierDto(currier));
     }
+
 
     @Override
     public ApiResult<Boolean> delete(UUID id) {
@@ -43,10 +47,10 @@ public class CurrierServiceImpl implements CurrierService {
 
     @Override
     public ApiResult<Boolean> edit(CurrierDTO currierDTO, UUID id) {
-        Optional<Currier> optionalCurrier = currierRepository.findById(id);
-        if (optionalCurrier.isPresent())
-            return ApiResult.successResponse("exist currier");
-        Currier currier = optionalCurrier.get();
+        Currier currier = currierRepository
+                .findById(id)
+                .orElseThrow(() -> RestException.restThrow("", HttpStatus.CONFLICT));
+
         currier.setBirthDate(currierDTO.getBirthDate());
         currier.setFirstName(currierDTO.getFirstName());
         currier.setLastName(currierDTO.getLastName());
@@ -69,27 +73,29 @@ public class CurrierServiceImpl implements CurrierService {
         return null;
     }
 
-    //    @Override
-//    public ApiResult<List<CurrierDTO>> getCurrierByStatus(String status) {
-//        Optional<Object> all = currierRepository.findAllByCurrierStatusEnum(status);
-//        return null;
-//    }
     public Currier mapToCurrier(CurrierDTO currierDTO) {
-        return new Currier(currierDTO.getBirthDate(),
+        User user = userService.findByPhoneNumberIfNotCreate(currierDTO.getPhoneNumber());
+        return new Currier(
+                user,
+                currierDTO.getBirthDate(),
                 currierDTO.getFirstName(),
                 currierDTO.getLastName(),
                 currierDTO.getCarNumber(),
                 currierDTO.getDriverLicense()
         );
     }
+
     private CurrierDTO mapCurrierTOCurrierDto(Currier currier) {
-        return new CurrierDTO(currier.getBirthDate(),
+        return new CurrierDTO(
+                currier.getBirthDate(),
                 currier.getFirstName(),
                 currier.getLastName(),
                 currier.getCarNumber(),
-                currier.getDriverLicense()
+                currier.getDriverLicense(),
+                currier.getUser().getPhoneNumber()
         );
     }
+
     private List<CurrierDTO> mapCurriersToCurrierDTOList(List<Currier> currierList) {
         return
                 currierList
@@ -97,4 +103,16 @@ public class CurrierServiceImpl implements CurrierService {
                         .map(this::mapCurrierTOCurrierDto)
                         .collect(Collectors.toList());
     }
+
+    /**
+     * ajdlasjdklajsdl
+     *
+     * @param currierDTO
+     */
+    private void carNumberOrDriverLicenseExistsThrow(CurrierDTO currierDTO) {
+        if (currierRepository.existsByCarNumber(currierDTO.getCarNumber())
+                || currierRepository.existsByDriverLicense(currierDTO.getDriverLicense()))
+            throw RestException.restThrow("Such currier already exists", HttpStatus.CONFLICT);
+    }
+
 }

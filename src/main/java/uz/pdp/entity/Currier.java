@@ -29,6 +29,7 @@ public class Currier {
     @JoinColumn(unique = true)
     @OneToOne(optional = false)
     private User user;
+
     @Column(nullable = false)
     private LocalDate birthDate;
 
@@ -42,12 +43,11 @@ public class Currier {
 
     private String driverLicense;
 
+    private boolean online;
 
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private CurrierStatusEnum role = CurrierStatusEnum.ONLINE;
 
-    public Currier(LocalDate birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
+    public Currier(User user, LocalDate birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
+        this.user = user;
         this.birthDate = birthDate;
         this.firstName = firstName;
         this.lastName = lastName;

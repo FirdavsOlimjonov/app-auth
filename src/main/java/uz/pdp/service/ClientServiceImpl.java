@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Client;
-import uz.pdp.entity.Employee;
+import uz.pdp.entity.User;
 import uz.pdp.payload.ClientDTO;
 import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.UserRepository;
@@ -21,6 +21,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public ResponseEntity<List<Client>> getAll() {
@@ -38,12 +39,14 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ResponseEntity<Boolean> save(ClientDTO clientDTO) {
-        if (userRepository.existsByPhoneNumber(clientDTO.getUser().getPhoneNumber())) {
+        if (userRepository.existsByPhoneNumber(clientDTO.getPhoneNumber()))
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-        }
-        Client client=new Client();
+
+        User user = userService.findByPhoneNumberIfNotCreate(clientDTO.getPhoneNumber());
+
+        Client client = new Client();
         client.setName(client.getName());
-        client.setUser(clientDTO.getUser());
+        client.setUser(user);
         clientRepository.save(client);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

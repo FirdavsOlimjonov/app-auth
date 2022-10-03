@@ -78,32 +78,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ResponseEntity<Boolean> edit(Employee employee, UUID id) {
 
         if (employeeRepository.existsById(id)) {
-            if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber())) {
+
+            if (userRepository.existsByPhoneNumber(employee.getUser().getPhoneNumber()))
                 return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-            }
 
             employeeRepository.save(employee);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         }
-
-//        if (employeeRepository.existsById(id)) {
-//
-//            List<Employee> all = employeeRepository.findAll();
-//
-//            for (Employee employee1 : all) {
-//                if (employee1.getUser().getId().equals(employee.getUser().getId())) {
-//                    if (employee1.getUser().getPhoneNumber().equals(employee.getUser().getPhoneNumber())) {
-//                        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-//                    }
-//
-//                    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-//
-//                }
-//
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//
-//            }
-//        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
