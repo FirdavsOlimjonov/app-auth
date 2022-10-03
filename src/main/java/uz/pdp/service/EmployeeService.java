@@ -1,10 +1,8 @@
 package uz.pdp.service;
 
-import org.springframework.http.ResponseEntity;
-import uz.pdp.entity.Employee;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.response_DTO.EmployeeDTO;
 
 
 import java.util.List;

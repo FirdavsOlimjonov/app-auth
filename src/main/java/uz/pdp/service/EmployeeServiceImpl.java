@@ -1,10 +1,8 @@
 package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Employee;
@@ -13,7 +11,7 @@ import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.response_DTO.EmployeeDTO;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
@@ -131,6 +129,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeDTO mapEmployeeToEmployeeDTO(Employee employee) {
         return new EmployeeDTO(
+                employee.getId(),
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getUser().getPhoneNumber(),

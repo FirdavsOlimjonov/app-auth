@@ -1,12 +1,10 @@
 package uz.pdp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import uz.pdp.entity.Employee;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.response_DTO.EmployeeDTO;
 import uz.pdp.service.EmployeeService;
 
 import java.util.List;
