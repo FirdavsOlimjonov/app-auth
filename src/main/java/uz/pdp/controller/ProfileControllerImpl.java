@@ -12,8 +12,8 @@ public class ProfileControllerImpl implements ProfileController{
 
 
     @Override
-    public ApiResult<Client> getClientProfile(String token) {
-        return null;
+    public ApiResult<Client> getClientProfile(String accessToken) {
+        return profileService.getClientProfile(accessToken);
     }
 
     @Override
