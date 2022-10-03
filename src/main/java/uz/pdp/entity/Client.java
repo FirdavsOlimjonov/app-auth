@@ -20,20 +20,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Client {
+public class Client extends AbsUser {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
-
-    @JoinColumn(unique = true)
-    @OneToOne(optional = false)
-    private User user;
-
-    private LocalDate birthDate;
+    private Long birthDate;
 
     @Column(nullable = false)
     private String name;
+
 }
