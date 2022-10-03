@@ -2,7 +2,8 @@ package uz.pdp.service;
 
 import org.springframework.http.ResponseEntity;
 import uz.pdp.entity.Employee;
-import uz.pdp.payload.EmployeeDTO;
+import uz.pdp.payload.AddEmployeeDTO;
+import uz.pdp.payload.ApiResult;
 
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface EmployeeService {
 
     ResponseEntity<Employee> getOne(UUID id);
 
-    ResponseEntity<Boolean> add(Employee employee);
+    ApiResult<String> add(AddEmployeeDTO employee);
 
     ResponseEntity<Boolean> edit(Employee employee, UUID id);
 

@@ -14,7 +14,6 @@ import java.io.Serializable;
 public class SignDTO implements Serializable {
 
     @NotBlank(message = "{MUST_NOT_BE_BLANK_EMAIL}")
-    @Email
     private String phoneNumber;
 
     @NotBlank(message = "{MUST_NOT_BE_BLANK_PASSWORD}")

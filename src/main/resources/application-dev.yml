@@ -17,12 +17,13 @@ spring:
 jwt:
   access:
     key: tHaX54Hwk^YMzKd@e@p7#70@!@*6d7676K8C1%T&hBnrzgqK28o
-    expiration-time: 720000
+    expiration-time: 72000000
   refresh:
     key: tHaX54Hwk^Ydfd()(+__$$%#%70OZ()BK8C1%T&hBnrzgqK287
     expiration-time: 60480000
 
 app:
   admin:
-     phoneNumber: +998930850236
+     phoneNumber: "+998930850236"
      password: root123
+  defaultPassword: ketmon123

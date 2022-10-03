@@ -37,4 +37,11 @@ public class Employee {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Role role;
+
+    public Employee(String firstName, String lastName, User user, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.user = user;
+        this.role = role;
+    }
 }
