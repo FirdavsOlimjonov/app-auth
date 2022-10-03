@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: Shafaq
+    active: team7
 
 
 eureka:
@@ -11,3 +11,4 @@ eureka:
       defaultZone: http://localhost:8762/eureka
   instance:
     hostname: localhost
+
