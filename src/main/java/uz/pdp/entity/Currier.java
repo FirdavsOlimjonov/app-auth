@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import uz.pdp.entity.enums.CurrierStatusEnum;
+import uz.pdp.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,13 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Currier {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+public class Currier  extends AbsUUIDEntity {
 
     @JoinColumn(unique = true)
     @OneToOne(optional = false)

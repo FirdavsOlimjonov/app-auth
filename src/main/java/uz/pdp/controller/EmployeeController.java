@@ -16,19 +16,19 @@ import java.util.UUID;
 public interface EmployeeController {
     String BASE_PATH = RestConstants.SERVICE_BASE_PATH + "employee";
 
-    @GetMapping("/getAll")
+    @GetMapping("/list")
     ResponseEntity<List<Employee>> getAll();
 
-    @GetMapping("/getOne/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<Employee> getOne(@PathVariable UUID id);
 
-    @PostMapping("/add")
+    @PostMapping
     ApiResult<String> add(@RequestBody AddEmployeeDTO employee);
 
-    @PutMapping("/edit/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<Boolean> edit(@RequestBody Employee employee, @PathVariable UUID id);
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Boolean> delete(@PathVariable UUID id);
 
 

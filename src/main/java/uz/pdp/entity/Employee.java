@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import uz.pdp.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -17,13 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Employee {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+public class Employee extends AbsUUIDEntity {
 
     @Column(nullable = false)
     private String firstName;

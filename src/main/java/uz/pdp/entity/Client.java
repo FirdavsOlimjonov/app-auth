@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import uz.pdp.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,13 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Client {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+public class Client extends AbsUUIDEntity {
 
     @JoinColumn(unique = true)
     @OneToOne(optional = false)
