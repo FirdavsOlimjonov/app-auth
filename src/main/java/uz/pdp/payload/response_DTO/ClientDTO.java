@@ -23,4 +23,10 @@ public class ClientDTO {
                 client.getName(), client.getBirthDate());
     }
 
+    public void setToClient(Client client) {
+        client.setName(name);
+        client.setBirthDate(birthDate);
+        client.getUser().setPhoneNumber(phoneNumber);
+    }
+
 }
