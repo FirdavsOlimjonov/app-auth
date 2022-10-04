@@ -7,6 +7,9 @@ import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.add_DTO.AddClientDTO;
 import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.util.RestConstants;
+import uz.pdp.payload.filterPayload.ClientDTOFilter;
+import uz.pdp.payload.filterPayload.ViewDTO;
+import uz.pdp.util.Pagination;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +20,7 @@ public interface ClientController {
 
     String CLIENT_CONTROLLER_BASE_PATH = RestConstants.SERVICE_BASE_PATH + "client";
     String GET_ALL_PATH = "/get-all";///1
-    
+
     String GET_BY_ID_PATH = "/{id}";
     String DELETE_BY_ID_PATH = "/{id}";
 
@@ -35,5 +38,10 @@ public interface ClientController {
 
     @DeleteMapping(DELETE_BY_ID_PATH)
     ApiResult<Boolean> delete(@PathVariable UUID id);
+
+    @PostMapping("/filter-list")
+    ApiResult<List<ClientDTOFilter>> getALl(@RequestBody(required = false) ViewDTO viewDTO,
+                                            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) int page,
+                                            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) int size);
 
 }

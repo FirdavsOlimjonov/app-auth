@@ -1,9 +1,10 @@
 package uz.pdp.service;
 
-import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.add_DTO.AddClientDTO;
 import uz.pdp.payload.response_DTO.ClientDTO;
+import uz.pdp.payload.filterPayload.ClientDTOFilter;
+import uz.pdp.payload.filterPayload.ViewDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,5 +18,7 @@ public interface ClientService {
     ApiResult<Boolean> edit(ClientDTO clientDTO);
 
     ApiResult<Boolean> delete(UUID id);
+
+    ApiResult<List<ClientDTOFilter>> getAllClients(ViewDTO viewDTO, int page, int size);
 
 }
