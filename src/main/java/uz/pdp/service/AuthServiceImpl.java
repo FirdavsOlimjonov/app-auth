@@ -78,7 +78,6 @@ public class AuthServiceImpl implements AuthService {
                     "EMAIL_ALREADY_EXIST",
                     HttpStatus.CONFLICT);
 
-
         User user = new User(
                 signDTO.getPhoneNumber(),
                 passwordEncoder.encode(signDTO.getPassword()));
@@ -91,9 +90,9 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ApiResult<?> verificationPhoneNumber(String email) {
-        User user = userRepository.findByPhoneNumber(email)
-                .orElseThrow(() -> RestException.restThrow("EMAIL_NOT_EXIST", HttpStatus.NOT_FOUND));
+    public ApiResult<?> verificationPhoneNumber(String phoneNumber) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> RestException.restThrow("NUMBER_NOT_EXIST", HttpStatus.NOT_FOUND));
 
         if (user.isEnabled()) {
             return ApiResult.successResponse("ALREADY_VERIFIED");

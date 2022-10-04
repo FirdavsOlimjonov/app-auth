@@ -18,5 +18,5 @@ public interface CurrierService {
 
     ApiResult<CurrierDTO> getCurrier(UUID id);
 
-    ApiResult<List<CurrierDTO>> getCurrierByStatus(String status);
+    ApiResult<List<CurrierDTO>> getCurrierByStatus(boolean status);
 }

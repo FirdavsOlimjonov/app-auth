@@ -1,11 +1,8 @@
 package uz.pdp.controller;
 
-import com.ctc.wstx.shaded.msv_core.datatype.xsd.UnicodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import uz.pdp.entity.Employee;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.CurrierDTO;
 import uz.pdp.service.CurrierServiceImpl;
@@ -26,6 +23,11 @@ public class CurrierControllerImpl implements CurrierController{
     @Override
     public ApiResult<List<CurrierDTO>> getAll() {
         return currierService.getCurrierList();
+    }
+
+    @Override
+    public ApiResult<List<CurrierDTO>> getAllByStatus(boolean status) {
+       return currierService.getCurrierByStatus(status);
     }
 
     @Override
