@@ -1,9 +1,11 @@
 package uz.pdp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.Client;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.add_DTO.AddClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.ClientDTO;
 import uz.pdp.payload.filterPayload.ClientDTOFilter;
@@ -20,28 +22,27 @@ public class ClientControllerImpl implements ClientController{
     private final ClientService clientService;
 
     @Override
-    public ResponseEntity<List<Client>> getAll() {
+    public ApiResult<List<ClientDTO>> getAll() {
         return clientService.getAll();
     }
 
     @Override
-    public ResponseEntity<Client> getOne(UUID id) {
-        return clientService.getOne(id);
+    public ApiResult<ClientDTO> get(UUID id) {
+        return clientService.get(id);
     }
 
     @Override
-    public ResponseEntity<Boolean> save(ClientDTO clientDTO) {
-        return clientService.save(clientDTO);
+    public ApiResult<Boolean> add(AddClientDTO addClientDTO) {
+        return clientService.add(addClientDTO);
     }
 
     @Override
-    public ResponseEntity<Boolean> edit(Client client, UUID id) {
-        return clientService.edit(client, id);
+    public ApiResult<Boolean> edit(ClientDTO clientDTO) {
+        return clientService.edit(clientDTO);
     }
 
-
     @Override
-    public ResponseEntity<Boolean> delete(UUID id) {
+    public ApiResult<Boolean> delete(UUID id) {
         return clientService.delete(id);
     }
 

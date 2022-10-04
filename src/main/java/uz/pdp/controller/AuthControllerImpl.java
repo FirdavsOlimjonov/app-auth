@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
+import uz.pdp.payload.SignInForEmployeeDTO;
 import uz.pdp.payload.TokenDTO;
 import uz.pdp.service.AuthService;
 
@@ -29,8 +30,8 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
-    public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
-        return authService.signIn(signDTO);
+    public ApiResult<TokenDTO> signInForEmployee(@Valid SignInForEmployeeDTO signInForEmployeeDTO) {
+        return authService.signInForEmployee(signInForEmployeeDTO);
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
+import uz.pdp.payload.SignInForEmployeeDTO;
 import uz.pdp.payload.TokenDTO;
 import uz.pdp.util.RestConstants;
 
@@ -30,7 +31,7 @@ public interface AuthController {
 
 
     @PostMapping(value = SIGN_IN_FOR_EMPLOYEE_PATH)
-    ApiResult<TokenDTO> signIn(@Valid @RequestBody SignDTO signDTO);
+    ApiResult<TokenDTO> signInForEmployee(@Valid @RequestBody SignInForEmployeeDTO signInForEmployeeDTO);
 
 
     @GetMapping(value = REFRESH_TOKEN_PATH)

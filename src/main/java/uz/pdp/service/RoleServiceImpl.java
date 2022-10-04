@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
 import uz.pdp.exceptions.RestException;
-import uz.pdp.payload.AddRoleDTO;
+import uz.pdp.payload.add_DTO.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
 import uz.pdp.repository.RoleRepository;

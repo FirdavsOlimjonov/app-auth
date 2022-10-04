@@ -1,7 +1,9 @@
 package uz.pdp.service;
 
-import org.springframework.http.ResponseEntity;
 import uz.pdp.entity.Client;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.add_DTO.AddClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.ClientDTO;
 import uz.pdp.payload.filterPayload.ClientDTOFilter;
@@ -12,13 +14,13 @@ import java.util.UUID;
 
 public interface ClientService {
 
-    ResponseEntity<List<Client>> getAll();
-    ResponseEntity<Client> getOne(UUID id);
-    ResponseEntity<Boolean> save(ClientDTO clientDTO);
+    ApiResult<List<ClientDTO>> getAll();
+    ApiResult<ClientDTO> get(UUID id);
+    ApiResult<Boolean> add(AddClientDTO clientDTO);
 
-    ResponseEntity<Boolean> edit(Client client, UUID id);
+    ApiResult<Boolean> edit(ClientDTO clientDTO);
 
-    ResponseEntity<Boolean> delete(UUID id);
+    ApiResult<Boolean> delete(UUID id);
 
     ApiResult<List<ClientDTOFilter>> getAllClients(ViewDTO viewDTO, int page, int size);
 

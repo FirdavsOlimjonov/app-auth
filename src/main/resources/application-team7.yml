@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/auth_db
     username: postgres
-    password: 8899
+    password: root123
 
   jpa:
     hibernate:
@@ -27,3 +27,4 @@ app:
     phoneNumber: +998930850236
     password: root123
 
+  defaultPassword: ketmon123

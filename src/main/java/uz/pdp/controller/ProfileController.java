@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.ClientDTO;
-import uz.pdp.service.ProfileService;
+import uz.pdp.payload.response_DTO.ClientDTO;
 
 /**
  * Profil API. [til, telefon, ism, tugulgan kun, maznilini] ozgartir olish

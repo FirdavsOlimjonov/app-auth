@@ -15,6 +15,8 @@ import java.util.UUID;
 public interface ClientRepository extends JpaRepository<Client, UUID> {
 
     Optional<Client> findByUserId(UUID id);
+    Optional<Client> findByUser_PhoneNumber(String user_phoneNumber);
+    boolean existsByUser_PhoneNumber(String user_phoneNumber);
 
     @Query(value = "SELECT * FROM get_query_result(?1)", nativeQuery = true)
     List<ClientDTOView> getAllUsersByStringQuery(String query);
