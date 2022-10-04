@@ -37,6 +37,5 @@ public interface AuthController {
     @GetMapping(value = REFRESH_TOKEN_PATH)
     ApiResult<TokenDTO> refreshToken(@RequestHeader(value = "Authorization") String accessToken,
                                      @RequestHeader(value = "RefreshToken") String refreshToken);
-    @GetMapping(value = USER_BY_TOKEN)
-    ApiResult<User> getUserByToken(@PathVariable String token);
+
 }

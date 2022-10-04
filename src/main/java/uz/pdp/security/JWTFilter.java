@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uz.pdp.entity.AbsUser;
+import uz.pdp.entity.template.AbsUUIDEntity;
 import uz.pdp.entity.User;
 import uz.pdp.repository.UserRepository;
 import uz.pdp.util.RestConstants;
@@ -60,7 +60,7 @@ public class JWTFilter extends OncePerRequestFilter {
                                         new UsernamePasswordAuthenticationToken(
                                                 user,
                                                 null,
-                                                AbsUser.authorities
+                                                user.getAuthorities()
                                         ));
                 }
             }

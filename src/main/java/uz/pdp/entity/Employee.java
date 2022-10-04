@@ -5,11 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import uz.pdp.entity.template.AbsUUIDEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -17,7 +15,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Employee extends AbsUser {
+public class Employee extends AbsUUIDEntity {
 
     @Column(nullable = false)
     private String firstName;
@@ -25,12 +23,14 @@ public class Employee extends AbsUser {
     @Column(nullable = false)
     private String lastName;
 
+    @JoinColumn(unique = true)
+    @OneToOne(optional = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Role role;
 
     public Employee(String firstName, String lastName, User user, Role role) {
-        super(user);
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
