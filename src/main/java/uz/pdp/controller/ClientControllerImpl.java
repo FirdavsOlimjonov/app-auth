@@ -2,12 +2,9 @@ package uz.pdp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
-import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.add_DTO.AddClientDTO;
 import uz.pdp.payload.response_DTO.ClientDTO;
-import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.ClientDTO;
 import uz.pdp.payload.filterPayload.ClientDTOFilter;
 import uz.pdp.payload.filterPayload.ViewDTO;
 import uz.pdp.service.ClientService;
