@@ -32,8 +32,8 @@ public class EmployeeControllerImpl implements EmployeeController{
     }
 
     @Override
-    public ApiResult<Boolean> edit(EmployeeDTO employeeDTO, UUID id) {
-        return employeeService.edit(employeeDTO, id);
+    public ApiResult<Boolean> edit(AddEmployeeDTO addEmployeeDTO, UUID id) {
+        return employeeService.edit(addEmployeeDTO, id);
     }
 
     @Override
