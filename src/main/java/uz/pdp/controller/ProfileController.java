@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.ClientDTO;
-import uz.pdp.util.RestConstants;
+import uz.pdp.service.ProfileService;
 
 
 @RequestMapping(path = ProfileController.PROFILE_CONTROLLER_BASE_PATH)
