@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.response_DTO.EmployeeDTO;
+import uz.pdp.payload.response_DTO.UserDTO;
 import uz.pdp.util.RestConstants;
 
 import java.util.UUID;
@@ -21,5 +22,5 @@ public interface UserController {
     ApiResult<EmployeeDTO> getEmployeeWithId(@PathVariable UUID id);
 
     @GetMapping(value = USER_ME_PATH)
-    ApiResult<User> getUserByToken();
+    ApiResult<UserDTO> getUserByToken();
 }
