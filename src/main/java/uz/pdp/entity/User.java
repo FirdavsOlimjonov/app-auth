@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import uz.pdp.util.UserFields;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@DynamicUpdate
+@DynamicUpdate // y we need this?
 @DynamicInsert
 public class User implements UserDetails {
 
@@ -33,7 +32,6 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    private String password;
     private boolean accountNonExpired;
 
     private boolean accountNonLocked;
@@ -42,22 +40,25 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
-
-    public User(String phoneNumber, String password) {
+    public User(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-        this.password = password;
         accountNonExpired = accountNonLocked = credentialsNonExpired = true;
         enabled = UserFields.enabled;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        return AbsUser.authorities;
     }
 
+    @Override
+    public String getPassword() {
+        return phoneNumber;
+    }
 
     @Override
     public String getUsername() {
-        return this.phoneNumber;
+        return phoneNumber;
     }
+
 }

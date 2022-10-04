@@ -2,9 +2,9 @@ server:
   port: 8090
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/auth_db
+    url: jdbc:postgresql://localhost:5432/auth
     username: postgres
-    password: 8899
+    password: 12345
 
   jpa:
     hibernate:

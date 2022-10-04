@@ -27,7 +27,7 @@ public class CurrierControllerImpl implements CurrierController{
 
     @Override
     public ApiResult<List<CurrierDTO>> getAllByStatus(boolean status) {
-       return currierService.getCurrierByStatus(status);
+        return currierService.getCurrierByStatus(status);
     }
 
     @Override

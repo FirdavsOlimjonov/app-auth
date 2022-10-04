@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -17,13 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class Employee {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+public class Employee extends AbsUser {
 
     @Column(nullable = false)
     private String firstName;
@@ -31,17 +25,14 @@ public class Employee {
     @Column(nullable = false)
     private String lastName;
 
-    @JoinColumn(unique = true)
-    @OneToOne(optional = false)
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Role role;
 
     public Employee(String firstName, String lastName, User user, Role role) {
+        super(user);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.user = user;
         this.role = role;
     }
 }

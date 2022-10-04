@@ -9,12 +9,12 @@ import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
-public class SignDTO implements Serializable {
+public class SignInForEmployeeDTO implements Serializable {
 
     @NotBlank(message = "{MUST_NOT_BE_BLANK_PHONE_NUMBER}")
     private String phoneNumber;
 
-    private Long birthDate;
+    @NotBlank(message = "{MUST_NOT_BE_BLANK_VERIFICATION_CODE}")
+    private String password;
 
-    private String name;
 }

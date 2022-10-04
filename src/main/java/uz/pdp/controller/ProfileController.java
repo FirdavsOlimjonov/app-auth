@@ -7,30 +7,36 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.ClientDTO;
-import uz.pdp.service.ProfileService;
+import uz.pdp.payload.response_DTO.ClientDTO;
+import uz.pdp.util.RestConstants;
 
-/**
- * Profil API. [til, telefon, ism, tugulgan kun, maznilini] ozgartir olish
- * Tilni o'zgartirish figmada yo'qku i bizni app miz hozircha bitta tilga mo'ljallanganku
- * Telefon raqami USER entity da
- * Ismi, tug'ilgan kuni CLIENT entity da
- * Manzilni qayerdan olishni bilmayman :(
- */
+
 @RequestMapping(path = ProfileController.PROFILE_CONTROLLER_BASE_PATH)
 public interface ProfileController {
 
 
-    String PROFILE_CONTROLLER_BASE_PATH = "/api/profile";
+    String PROFILE_CONTROLLER_BASE_PATH = RestConstants.SERVICE_BASE_PATH + "profile";
 
     String READ_PATH = "/read-profile";
 
     String EDIT_PATH = "/edit-profile";
 
+    /**
+     * Access token berilganda client ma'lumotlarini qaytarish
+     *
+     * @param accessToken = @accessToken
+     * @return Client
+     */
     @GetMapping(value = READ_PATH)
-    ApiResult<Client> getClientProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String token);
+    ApiResult<Client> getClientProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken);
 
 
+    /**
+     * ClientDTO berilsa Client ma'lumotlarini update qilish
+     *
+     * @param clientDTO = clientDTO
+     * @return @Client
+     */
     @PutMapping(value = EDIT_PATH)
     ApiResult<Client> editClientProfile(ClientDTO clientDTO);
 

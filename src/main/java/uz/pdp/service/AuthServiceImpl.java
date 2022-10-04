@@ -18,6 +18,7 @@ import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
+import uz.pdp.payload.SignInForEmployeeDTO;
 import uz.pdp.payload.TokenDTO;
 import uz.pdp.repository.UserRepository;
 import uz.pdp.security.JWTFilter;
@@ -73,26 +74,28 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public ApiResult<Boolean> signUp(SignDTO signDTO) {
 
-        if (userRepository.existsByPhoneNumber(signDTO.getPhoneNumber()))
-            throw RestException.restThrow(
-                    "EMAIL_ALREADY_EXIST",
-                    HttpStatus.CONFLICT);
-
-        User user = new User(
-                signDTO.getPhoneNumber(),
-                passwordEncoder.encode(signDTO.getPassword()));
-
-        CompletableFuture.runAsync(() -> sendVerificationCodeToPhoneNumber(user));
-
-        userRepository.save(user);
-        return ApiResult.successResponse();
+//        if (userRepository.existsByPhoneNumber(signDTO.getPhoneNumber()))
+//            throw RestException.restThrow(
+//                    "EMAIL_ALREADY_EXIST",
+//                    HttpStatus.CONFLICT);
+//
+//
+//        User user = new User(
+//                signDTO.getPhoneNumber(),
+//                passwordEncoder.encode(signDTO.getPassword()));
+//
+//        CompletableFuture.runAsync(() -> sendVerificationCodeToPhoneNumber(user));
+//
+//        userRepository.save(user);
+//        return ApiResult.successResponse();
+        return null;
     }
 
 
     @Override
-    public ApiResult<?> verificationPhoneNumber(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> RestException.restThrow("NUMBER_NOT_EXIST", HttpStatus.NOT_FOUND));
+    public ApiResult<?> verificationPhoneNumber(String email) {
+        User user = userRepository.findByPhoneNumber(email)
+                .orElseThrow(() -> RestException.restThrow("EMAIL_NOT_EXIST", HttpStatus.NOT_FOUND));
 
         if (user.isEnabled()) {
             return ApiResult.successResponse("ALREADY_VERIFIED");
@@ -105,12 +108,12 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ApiResult<TokenDTO> signIn(SignDTO signDTO) {
+    public ApiResult<TokenDTO> signInForEmployee(SignInForEmployeeDTO signInForEmployeeDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        signDTO.getPhoneNumber(),
-                        signDTO.getPassword()
+                        signInForEmployeeDTO.getPhoneNumber(),
+                        signInForEmployeeDTO.getPassword()
                 ));
 
         User user = (User) authentication.getPrincipal();

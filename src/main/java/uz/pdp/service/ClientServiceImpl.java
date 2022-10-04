@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Client;
 import uz.pdp.entity.User;
-import uz.pdp.payload.ClientDTO;
+import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.add_DTO.AddClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.UserRepository;
 
@@ -24,57 +27,51 @@ public class ClientServiceImpl implements ClientService {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<List<Client>> getAll() {
+    public ApiResult<List<ClientDTO>> getAll() {
         List<Client> all = clientRepository.findAll();
-        return ResponseEntity.ok(all);
-
+        return ApiResult.successResponse(all
+                .stream()
+                .map(ClientDTO::mapping)
+                .toList());
     }
 
     @Override
-    public ResponseEntity<Client> getOne(UUID id) {
-        Optional<Client> optionalClient = clientRepository.findById(id);
-        return optionalClient.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ApiResult<ClientDTO> get(UUID id) {
+
+        return ApiResult.successResponse(ClientDTO.mapping(clientRepository.findById(id)
+                .orElseThrow(() -> RestException.restThrow("", HttpStatus.NOT_FOUND))));
     }
 
-
     @Override
-    public ResponseEntity<Boolean> save(ClientDTO clientDTO) {
-        if (userRepository.existsByPhoneNumber(clientDTO.getPhoneNumber()))
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
+    public ApiResult<Boolean> add(AddClientDTO addClientDTO) {
+        if (clientRepository.existsByUser_PhoneNumber(addClientDTO.getPhoneNumber()))
+            throw RestException.restThrow("ALREADY_REPORTED", HttpStatus.ALREADY_REPORTED);
+        User user = userRepository.findByPhoneNumber(addClientDTO.getPhoneNumber())
+                .orElseGet(() -> userRepository.save(new User(addClientDTO.getPhoneNumber())));
 
-        User user = userService.findByPhoneNumberIfNotCreate(clientDTO.getPhoneNumber());
-
-        Client client = new Client();
-        client.setName(client.getName());
-        client.setUser(user);
+        Client client = new Client(user, addClientDTO);
         clientRepository.save(client);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ApiResult.successResponse(true);
     }
 
     @Override
-    public ResponseEntity<Boolean> edit(Client client, UUID id) {
-
-        if (clientRepository.existsById(id)) {
-            if (userRepository.existsByPhoneNumber(client.getUser().getPhoneNumber())) {
-                return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-            }
-
-            clientRepository.save(client);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ApiResult<Boolean> edit(ClientDTO clientDTO) {
+        Optional<Client> optionalClient = clientRepository.findById(clientDTO.getId());
+        if (optionalClient.isEmpty())
+            throw RestException.restThrow("NOT_FOUND", HttpStatus.NOT_FOUND);
+        Client client = optionalClient.get();
+        clientDTO.setToClient(client);
+        clientRepository.save(client);
+        return ApiResult.successResponse(true);
     }
-
 
     @Override
-    public ResponseEntity<Boolean> delete(UUID id) {
-        if (clientRepository.existsById(id)) {
-            clientRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }
+    public ApiResult<Boolean> delete(UUID id) {
+        if (!clientRepository.existsById(id))
+            throw RestException.restThrow("NOT_FOUND",HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ApiResult.successResponse(true);
     }
+
 }
 
