@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uz.pdp.entity.Client;
 import uz.pdp.payload.ApiResult;
-import uz.pdp.payload.ClientDTO;
-import uz.pdp.service.ProfileService;
+import uz.pdp.payload.response_DTO.ClientDTO;
+import uz.pdp.util.RestConstants;
 
 
 @RequestMapping(path = ProfileController.PROFILE_CONTROLLER_BASE_PATH)
 public interface ProfileController {
 
 
-    String PROFILE_CONTROLLER_BASE_PATH = RestConstants.SERVICE_BASE_PATH +  "profile";
+    String PROFILE_CONTROLLER_BASE_PATH = RestConstants.SERVICE_BASE_PATH + "profile";
 
     String READ_PATH = "/read-profile";
 
@@ -23,7 +23,8 @@ public interface ProfileController {
 
     /**
      * Access token berilganda client ma'lumotlarini qaytarish
-     * @param  accessToken = @accessToken
+     *
+     * @param accessToken = @accessToken
      * @return Client
      */
     @GetMapping(value = READ_PATH)
@@ -32,6 +33,7 @@ public interface ProfileController {
 
     /**
      * ClientDTO berilsa Client ma'lumotlarini update qilish
+     *
      * @param clientDTO = clientDTO
      * @return @Client
      */
