@@ -26,11 +26,9 @@ public class UserServiceImpl implements UserService {
     public User findByPhoneNumberIfNotCreate(String phoneNumber, String password) {
         User user = Optional.of(userRepository
                         .findByPhoneNumber(phoneNumber)
-                        .orElseGet(() -> userRepository.save(new User(phoneNumber, password))))
+                        .orElseGet(() -> userRepository.save(new User(phoneNumber))))
                 .orElseThrow(() -> RestException.restThrow("Error in saving", HttpStatus.CONFLICT));
 
-        if (Objects.isNull(user.getPassword()))
-            user.setPassword(password);
         return user;
     }
 }

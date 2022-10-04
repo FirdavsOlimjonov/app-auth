@@ -22,3 +22,9 @@ jwt:
   refresh:
     key: tHaX54Hwk^Ydfd()(+__$$%#%70OZ()BK8C1%T&hBnrzgqK287
     expiration-time: 60480000
+
+app:
+  admin:
+    phoneNumber: "+998930850236"
+    password: root123
+  defaultPassword: ketmon123

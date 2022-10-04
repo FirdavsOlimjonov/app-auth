@@ -1,10 +1,9 @@
 package uz.pdp.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.pdp.entity.Employee;
-import uz.pdp.payload.AddEmployeeDTO;
+import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.response_DTO.EmployeeDTO;
 import uz.pdp.util.RestConstants;
 
 
@@ -16,20 +15,20 @@ import java.util.UUID;
 public interface EmployeeController {
     String BASE_PATH = RestConstants.SERVICE_BASE_PATH + "employee";
 
-    @GetMapping("/getAll")
-    ResponseEntity<List<Employee>> getAll();
+    @GetMapping("/list")
+    ApiResult<List<EmployeeDTO>> getAll();
 
-    @GetMapping("/getOne/{id}")
-    ResponseEntity<Employee> getOne(@PathVariable UUID id);
+    @GetMapping("/{id}")
+    ApiResult<EmployeeDTO> get(@PathVariable UUID id);
 
-    @PostMapping("/add")
+    @PostMapping
     ApiResult<String> add(@RequestBody AddEmployeeDTO employee);
 
-    @PutMapping("/edit/{id}")
-    ResponseEntity<Boolean> edit(@RequestBody Employee employee, @PathVariable UUID id);
+    @PutMapping("/{id}")
+    ApiResult<Boolean> edit(@RequestBody AddEmployeeDTO addEmployeeDTO, @PathVariable UUID id);
 
-    @DeleteMapping("/delete/{id}")
-    ResponseEntity<Boolean> delete(@PathVariable UUID id);
+    @DeleteMapping("/{id}")
+    ApiResult<String> delete(@PathVariable UUID id);
 
 
 }

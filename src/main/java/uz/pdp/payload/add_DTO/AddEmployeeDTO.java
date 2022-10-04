@@ -1,8 +1,10 @@
-package uz.pdp.payload;
+package uz.pdp.payload.add_DTO;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class AddEmployeeDTO {
 
     private String firstName;

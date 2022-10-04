@@ -1,11 +1,8 @@
 package uz.pdp.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.pdp.entity.Employee;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.CurrierDTO;
-import uz.pdp.payload.EmployeeDTO;
 
 import javax.validation.Valid;
 import java.util.List;
