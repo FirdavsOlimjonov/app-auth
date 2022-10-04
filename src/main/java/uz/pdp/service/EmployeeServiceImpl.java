@@ -94,8 +94,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             Employee employee = optionalEmployee.get();
 
 
-            Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(addEmployeeDTO.getPhoneNumber());
-
             employee.setFirstName(addEmployeeDTO.getFirstName());
             employee.setLastName(addEmployeeDTO.getLastName());
             employee.getUser().setPhoneNumber(addEmployeeDTO.getPhoneNumber());

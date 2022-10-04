@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.pdp.entity.User;
@@ -24,7 +23,6 @@ import uz.pdp.repository.UserRepository;
 import uz.pdp.security.JWTFilter;
 
 import java.util.Date;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -47,17 +45,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final JWTFilter jwtFilter;
 
-    //    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public AuthServiceImpl(UserRepository userRepository,
                            @Lazy AuthenticationManager authenticationManager,
-                           @Lazy PasswordEncoder passwordEncoder,
                            JWTFilter jwtFilter) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtFilter = jwtFilter;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -177,12 +171,7 @@ public class AuthServiceImpl implements AuthService {
         throw RestException.restThrow("ACCESS_TOKEN_NOT_EXPIRED", HttpStatus.UNAUTHORIZED);
     }
 
-    @Override
-    public ApiResult<User> getUserByToken(String token) {
-        String phoneNumber = jwtFilter.getEmailFromToken(token);
-        return ApiResult.successResponse(userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> RestException.restThrow("NOT_FOUND", HttpStatus.NOT_FOUND)));
-    }
+
 
     public String generateToken(String email, boolean accessToken) {
 

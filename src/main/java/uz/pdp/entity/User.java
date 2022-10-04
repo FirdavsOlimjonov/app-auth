@@ -8,9 +8,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import uz.pdp.util.UserFields;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@DynamicUpdate // y we need this?
+@DynamicUpdate
 @DynamicInsert
 public class User implements UserDetails {
 
@@ -32,33 +32,37 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    private boolean accountNonExpired;
+    private String password;
 
-    private boolean accountNonLocked;
+    private boolean accountNonExpired = true;
 
-    private boolean credentialsNonExpired;
+    private boolean accountNonLocked = true;
 
-    private boolean enabled;
+    private boolean credentialsNonExpired=true;
+
+    private boolean enabled = true;
+
+    public User(String phoneNumber, String password) {
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
 
     public User(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-        accountNonExpired = accountNonLocked = credentialsNonExpired = true;
-        enabled = UserFields.enabled;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AbsUser.authorities;
+        return new ArrayList<>();
     }
 
     @Override
     public String getPassword() {
-        return phoneNumber;
+        return password;
     }
 
     @Override
     public String getUsername() {
         return phoneNumber;
     }
-
 }
