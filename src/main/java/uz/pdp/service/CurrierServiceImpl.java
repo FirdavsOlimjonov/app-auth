@@ -69,9 +69,12 @@ public class CurrierServiceImpl implements CurrierService {
     }
 
     @Override
-    public ApiResult<List<CurrierDTO>> getCurrierByStatus(String status) {
-        return null;
+    public ApiResult<List<CurrierDTO>> getCurrierByStatus(boolean status) {
+        List<Currier> curriersByOnline = currierRepository.getCurriersByOnline(status);
+        List<CurrierDTO> currierDTOList = mapCurriersToCurrierDTOList(curriersByOnline);
+        return ApiResult.successResponse(currierDTOList);
     }
+
 
     public Currier mapToCurrier(CurrierDTO currierDTO) {
         User user = userService.findByPhoneNumberIfNotCreate(currierDTO.getPhoneNumber());
@@ -105,8 +108,8 @@ public class CurrierServiceImpl implements CurrierService {
     }
 
     /**
-     * ajdlasjdklajsdl
-     *
+     * checks driverʻs car number or license exists
+     * throws currier already existed exception
      * @param currierDTO
      */
     private void carNumberOrDriverLicenseExistsThrow(CurrierDTO currierDTO) {
