@@ -39,8 +39,5 @@ public class AuthControllerImpl implements AuthController {
         return authService.refreshToken(accessToken, refreshToken);
     }
 
-    @Override
-    public ApiResult<User> getUserByToken(String token) {
-        return authService.getUserByToken(token);
-    }
+
 }
