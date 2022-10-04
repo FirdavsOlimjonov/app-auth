@@ -83,8 +83,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ApiResult<Boolean> edit(AddEmployeeDTO addEmployeeDTO, UUID id) {
-        if(employeeRepository.existsByUser_PhoneNumber(addEmployeeDTO.getPhoneNumber())
-                && !((employeeRepository.findByUser_PhoneNumber(addEmployeeDTO.getPhoneNumber()).getId()).equals(id))){
+        if (employeeRepository.existsByUser_PhoneNumber(addEmployeeDTO.getPhoneNumber())
+                && !((employeeRepository.findByUser_PhoneNumber(addEmployeeDTO.getPhoneNumber()).getId()).equals(id))) {
             throw RestException.restThrow("phoneNumber already exists", HttpStatus.ALREADY_REPORTED);
         }
 
