@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
+import uz.pdp.entity.enums.RoleTypeEnum;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -30,7 +31,7 @@ public class AddRoleDTO {
     private Set<PermissionEnum> permissions;
 
     public Role mapToRole() {
-        return new Role(null, name, description, permissions);
+        return new Role(null, name, description, permissions, RoleTypeEnum.OTHER);
     }
 
 }
