@@ -1,10 +1,12 @@
 package uz.pdp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.UserDatabase;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.response_DTO.EmployeeDTO;
+import uz.pdp.payload.response_DTO.UserDTO;
 import uz.pdp.service.UserService;
 
 import java.util.UUID;
@@ -21,7 +23,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ApiResult<User> getUserByToken() {
+    public ApiResult<UserDTO> getUserByToken() {
         return userService.getUserByToken();
     }
 }

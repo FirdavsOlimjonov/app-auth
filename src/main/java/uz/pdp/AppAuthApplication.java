@@ -16,4 +16,5 @@ public class AppAuthApplication {
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
+
 }
