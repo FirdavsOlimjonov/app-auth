@@ -3,18 +3,22 @@ package uz.pdp.component;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import uz.pdp.entity.Employee;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
 import uz.pdp.entity.enums.PermissionEnum;
+import uz.pdp.entity.enums.RoleTypeEnum;
+import uz.pdp.exceptions.RestException;
 import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -38,7 +42,8 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (Objects.equals(ddlMode, "create") || Objects.equals(ddlMode, "create-drop")) {
+        if (Objects.equals(ddlMode, "create") ||
+                Objects.equals(ddlMode, "create-drop")) {
             User admin = new User(
                     adminPhoneNumber,
                     passwordEncoder.encode(adminPassword));
@@ -47,6 +52,7 @@ public class DataLoader implements CommandLineRunner {
 
             Role roleSuperAdmin = new Role();
             roleSuperAdmin.setName("SUPER_ADMIN");
+            roleSuperAdmin.setRoleType(RoleTypeEnum.ADMIN);
             roleSuperAdmin.setDescription("Owner of this project");
             roleSuperAdmin.setPermissions(Set.of(PermissionEnum.values()));
             roleSuperAdmin = roleRepository.save(roleSuperAdmin);
@@ -58,10 +64,17 @@ public class DataLoader implements CommandLineRunner {
             superAdmin.setLastName("Admin");
             employeeRepository.save(superAdmin);
         }
+        clientRepository.executeInitialFunction();
 
-        if (Objects.nonNull(ddlMode) && ddlMode.startsWith("create")) {
-            clientRepository.executeInitialFunction();
-        }
+        Role role = roleRepository
+                .findByRoleType(RoleTypeEnum.ADMIN)
+                .orElseThrow(() ->
+                        RestException
+                                .restThrow(
+                                        "Admin role bo'lmasa o'lasan",
+                                        HttpStatus.BAD_REQUEST));
+        role.setPermissions(Set.of(PermissionEnum.values()));
+        roleRepository.save(role);
     }
 
 

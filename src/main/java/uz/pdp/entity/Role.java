@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.pdp.entity.enums.PermissionEnum;
+import uz.pdp.entity.enums.RoleTypeEnum;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -29,4 +30,10 @@ public class Role {
     @ElementCollection
     @Enumerated(value = EnumType.STRING)
     private Set<PermissionEnum> permissions;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleTypeEnum roleType;
+
+
 }
