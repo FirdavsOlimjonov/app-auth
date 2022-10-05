@@ -24,6 +24,8 @@ public interface ClientController {
     String GET_BY_ID_PATH = "/{id}";
     String DELETE_BY_ID_PATH = "/{id}";
 
+    String GET_FILTER_PATH = "/filter-list";
+
     @GetMapping(GET_ALL_PATH)
     ApiResult<List<ClientDTO>> getAll();
 
@@ -39,7 +41,7 @@ public interface ClientController {
     @DeleteMapping(DELETE_BY_ID_PATH)
     ApiResult<Boolean> delete(@PathVariable UUID id);
 
-    @PostMapping("/filter-list")
+    @PostMapping(GET_FILTER_PATH)
     ApiResult<List<ClientDTOFilter>> getALl(@RequestBody(required = false) ViewDTO viewDTO,
                                             @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) int page,
                                             @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) int size);
