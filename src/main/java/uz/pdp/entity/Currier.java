@@ -39,7 +39,7 @@ public class Currier extends AbsUUIDEntity {
 
     @JoinColumn(unique = true)
     @OneToOne(optional = false)
-    private User user;
+    private User user;;
 
 
     public Currier(User user, Long birthDate, String firstName, String lastName, String carNumber, String driverLicense) {
