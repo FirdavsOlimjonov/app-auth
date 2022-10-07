@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
+import uz.pdp.entity.enums.PermissionEnum;
 
 import javax.persistence.Column;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -31,7 +34,9 @@ public class UserDTO {
 
     private boolean enabled;
 
-    private Role role;
+    private Set<PermissionEnum> permissions;
+
+    private String name;
 
     public UserDTO(User user, Role role) {
         this.id = user.getId();
@@ -40,11 +45,12 @@ public class UserDTO {
         this.accountNonLocked = user.isAccountNonLocked();
         this.credentialsNonExpired = user.isCredentialsNonExpired();
         this.enabled = user.isEnabled();
-        this.role = role;
+        if (Objects.nonNull(role))
+            this.permissions = role.getPermissions();
     }
 
     public static UserDTO mapping(User user, Role role) {
-        return new UserDTO(user,role);
+        return new UserDTO(user, role);
     }
 
 }
