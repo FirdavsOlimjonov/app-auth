@@ -6,7 +6,8 @@ public enum PageEnum {
     PRODUCT("Products"),
     POSITION("Positions"),
     EMPLOYEE("Employees"),
-    CATEGORY("Categories");
+    CATEGORY("Categories"),
+    FEEDBACK("Feedbacks");
 
     private final String name;
 
