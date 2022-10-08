@@ -29,7 +29,9 @@ public enum PermissionEnum {
     GET_ORDER_FOR_COURIER(PageEnum.ORDER),
     EDIT_STATUS(PageEnum.ORDER),
     GET_ORDER(PageEnum.ORDER),
-    SHOW_STATISTICS(PageEnum.ORDER);
+    SHOW_STATISTICS(PageEnum.ORDER),
+    ADD_FEEDBACK(PageEnum.FEEDBACK),
+    EDIT_STATUS_FEEDBACK(PageEnum.FEEDBACK);
 
     private final PageEnum page;
 
