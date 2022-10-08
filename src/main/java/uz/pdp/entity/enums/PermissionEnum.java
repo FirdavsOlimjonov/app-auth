@@ -31,7 +31,7 @@ public enum PermissionEnum {
     GET_ORDER(PageEnum.ORDER),
     SHOW_STATISTICS(PageEnum.ORDER),
     ADD_FEEDBACK(PageEnum.FEEDBACK),
-    EDIT_STATUS_FEEDBACK(PageEnum.FEEDBACK);
+    CHANGE_STATUS(PageEnum.FEEDBACK);
 
     private final PageEnum page;
 
