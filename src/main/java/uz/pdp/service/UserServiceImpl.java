@@ -9,6 +9,8 @@ import uz.pdp.entity.Employee;
 import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.add_DTO.GetOrCreateClientDTO;
+import uz.pdp.payload.response_DTO.ClientDTO;
 import uz.pdp.payload.response_DTO.UserDTO;
 import uz.pdp.repository.ClientRepository;
 import uz.pdp.repository.EmployeeRepository;
@@ -52,13 +54,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResult<UserDTO> getClientById(UUID userId) {
+    public ApiResult<ClientDTO> getClientByUserId(UUID userId) {
         Client client = clientRepository.findByUserId(userId).orElseGet(Client::new);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setName(client.getName());
-        userDTO.setPhoneNumber(client.getUser().getPhoneNumber());
-
-        return ApiResult.successResponse(userDTO);
+        return ApiResult.successResponse(ClientDTO.mapping(client));
     }
+
+    @Override
+    public ApiResult<ClientDTO> getClientByPhoneNumber(GetOrCreateClientDTO getOrCreateClientDTO) {
+        Client client = clientRepository
+            .findByUser_PhoneNumber(getOrCreateClientDTO.getPhoneNumber())
+                .orElseGet(() -> createClient(getOrCreateClientDTO));
+
+        return ApiResult.successResponse(ClientDTO.mapping(client));
+    }
+
+    private Client createClient(GetOrCreateClientDTO getOrCreateClientDTO) {
+        User user = userRepository
+                .findByPhoneNumber(getOrCreateClientDTO.getPhoneNumber())
+                .orElseGet(() -> userRepository.save(
+                        getOrCreateClientDTO.mappingUser()));
+        return clientRepository
+                .save(getOrCreateClientDTO
+                .mappingClient(user));
+    }
+
 }
