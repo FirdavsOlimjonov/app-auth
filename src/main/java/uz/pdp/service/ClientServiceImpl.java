@@ -90,19 +90,17 @@ public class ClientServiceImpl implements ClientService {
 
         StringBuilder query;
 
-        query = new StringBuilder("""
-                    WITH temp AS (
-                        SELECT  CAST(c.id as varchar) id,
-                               c.name,
-                               u.phone_number,
-                               0 AS order_count,
-                               u.enabled
-                           FROM client c
-                           LEFT JOIN users u ON u.id = c.user_id
-                    """);
+        query = new StringBuilder("WITH temp AS ( ");
+        query.append("SELECT  CAST(c.id as varchar) id, ");
+        query.append("c.name, ");
+        query.append("u.phone_number, ");
+        query.append("0 AS order_count, ");
+        query.append("u.enabled ");
+        query.append("FROM client c ");
+        query.append("LEFT JOIN users u ON u.id = c.user_id ");
 
 /**
- admin filter sort yoki search qilayotganini tekshiramiz
+ check admin is filtering sorting or searching
  */
 
         if (Objects.nonNull(viewDTO)){
@@ -133,8 +131,8 @@ public class ClientServiceImpl implements ClientService {
 
         List<ClientDTOView> clientDTOViewList = clientRepository.getAllUsersByStringQuery(query.toString());
 
-// order service ga borib userlar orderlari sonini olib kelamiz
-        Map<UUID, Integer> userOrderCounts = getUserOrdersCount(clientDTOViewList);
+// get count of users order from order service
+        Map<String, Integer> userOrderCounts = getUserOrdersCount(clientDTOViewList);
 
         if (Objects.isNull(userOrderCounts))
             throw RestException.restThrow("Order Service returned wrong response", HttpStatus.SERVICE_UNAVAILABLE);
@@ -144,7 +142,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
-    private List<ClientDTOFilter> mapToClientDTO(Map<UUID, Integer> userOrderCounts, List<ClientDTOView> clientDTOViewList){
+    private @NotNull List<ClientDTOFilter> mapToClientDTO(Map<String, Integer> userOrderCounts, List<ClientDTOView> clientDTOViewList){
 
         List<ClientDTOFilter> list = new ArrayList<>();
 
@@ -154,14 +152,14 @@ public class ClientServiceImpl implements ClientService {
                             UUID.fromString(clientDTOView.getId()),
                             clientDTOView.getName(),
                             clientDTOView.getPhone_number(),
-                            userOrderCounts.get(UUID.fromString(clientDTOView.getId())),
+                            userOrderCounts.get(clientDTOView.getId()) == null ? 0 : userOrderCounts.get(clientDTOView.getId()),
                             clientDTOView.getEnabled()));
         }
 
         return list;
     }
 
-    private Map<UUID, Integer> getUserOrdersCount(List<ClientDTOView> clientDTOViewList){
+    private Map<String, Integer> getUserOrdersCount(List<ClientDTOView> clientDTOViewList){
 
         Set<UUID> userIds = clientDTOViewList.stream().map(c -> UUID.fromString(c.getId())).collect(Collectors.toSet());
 
@@ -170,7 +168,7 @@ public class ClientServiceImpl implements ClientService {
                         ORDER_SERVICE_URL,
                         HttpMethod.POST,
                         new HttpEntity<>(userIds),
-                        new ParameterizedTypeReference<ApiResult<Map<UUID, Integer>>>() {
+                        new ParameterizedTypeReference<ApiResult<Map<String, Integer>>>() {
                         })).getBody()).getData();
     }
 
