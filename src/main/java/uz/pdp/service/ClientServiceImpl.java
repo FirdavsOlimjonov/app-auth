@@ -43,7 +43,8 @@ public class ClientServiceImpl implements ClientService {
         return ApiResult.successResponse(all
                 .stream()
                 .map(ClientDTO::mapping)
-                .toList());
+                .collect(
+                Collectors.toList()));
     }
 
     @Override
@@ -67,7 +68,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ApiResult<Boolean> edit(ClientDTO clientDTO) {
-        Optional<Client> optionalClient = clientRepository.findById(clientDTO.getId());
+        Optional<Client> optionalClient = clientRepository
+                .findById(clientDTO.getId());
         if (optionalClient.isEmpty())
             throw RestException.restThrow("NOT_FOUND", HttpStatus.NOT_FOUND);
         Client client = optionalClient.get();

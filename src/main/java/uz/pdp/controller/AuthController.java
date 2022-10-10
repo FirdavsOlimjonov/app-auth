@@ -19,7 +19,6 @@ public interface AuthController {
     String SIGN_UP_PATH = "/sign-up";
     String VERIFICATION_PATH = "/verification-phone-number/{phoneNumber}";
     String REFRESH_TOKEN_PATH = "/refresh-token";
-    String USER_BY_TOKEN = "/user-by-token/{token}";
 
 
     @PostMapping(value = SIGN_UP_PATH)
