@@ -1,6 +1,7 @@
 package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -33,7 +34,7 @@ public class ClientServiceImpl implements ClientService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    private final String ORDER_SERVICE_URL = "http://localhost/api/order/v1/order/order-count";
+    private final String ORDER_SERVICE_URL = "http://localhost:8081/api/order/v1/order/users-order-count";
 
 
     @Override
@@ -86,7 +87,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ApiResult<List<ClientDTOFilter>> getAllClients(ViewDTO viewDTO, int page, int size) {
-
 
         StringBuilder query;
 
