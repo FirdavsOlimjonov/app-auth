@@ -18,7 +18,6 @@ import uz.pdp.repository.RoleRepository;
 import uz.pdp.repository.UserRepository;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -41,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
     private String adminPassword;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (Objects.equals(ddlMode, "create") ||
                 Objects.equals(ddlMode, "create-drop")) {
             User admin = new User(

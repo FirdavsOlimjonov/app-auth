@@ -1,14 +1,16 @@
 server:
   port: 8090
 spring:
+  kafka:
+    bootstrap-servers=localhost:9092
   datasource:
     url: jdbc:postgresql://localhost:5432/auth
     username: postgres
-    password: root123
+    password: 1223
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -24,6 +26,7 @@ jwt:
 
 app:
   admin:
-     phoneNumber: "+998930850236"
-     password: root123
+    phoneNumber: "+998930850236"
+    password: root123
   defaultPassword: ketmon123
+
