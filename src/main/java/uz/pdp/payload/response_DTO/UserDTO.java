@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
-import uz.pdp.entity.enums.PageEnum;
 import uz.pdp.entity.enums.PermissionEnum;
+import uz.pdp.payload.PageDTO;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -38,7 +36,7 @@ public class UserDTO {
 
     private String name;
 
-    private Set<PageEnum> pages;
+    private SortedSet<PageDTO> pages;
 
     public UserDTO(User user, Role role) {
         this.id = user.getId();
@@ -60,11 +58,16 @@ public class UserDTO {
     private void setPages(Role role) {
         if (Objects.nonNull(role) && Objects.nonNull(role.getPermissions())) {
             //todo ROLE PAGE DYNAMIC
-            this.pages = role
-                    .getPermissions()
+
+            Comparator<PageDTO> comparator = Comparator.comparingInt(PageDTO::getPriority);
+
+            SortedSet<PageDTO> pageDTOS = new TreeSet<>(comparator);
+
+            pageDTOS.addAll(role.getPages()
                     .stream()
-                    .map(PermissionEnum::getPage)
-                    .collect(Collectors.toSet());
+                    .map(PageDTO::mapToDTO)
+                    .collect(Collectors.toSet()));
+            this.pages = pageDTOS;
         }
     }
 
