@@ -121,6 +121,9 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken)
                 .build();
 
+        int[] arr = new int[5];
+        System.out.println(arr.length);
+
         return ApiResult.successResponse(
                 "SUCCESSFULLY_TOKEN_GENERATED",
                 tokenDTO);

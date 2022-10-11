@@ -1,7 +1,11 @@
 package uz.pdp.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import uz.pdp.entity.Employee;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.filterPayload.enums.SearchEmployeeDTO;
 import uz.pdp.payload.response_DTO.EmployeeDTO;
 
 
@@ -19,5 +23,7 @@ public interface EmployeeService {
     ApiResult<Boolean> edit(AddEmployeeDTO addEmployeeDTO, UUID id);
 
     ApiResult<String> delete(UUID id);
+
+    ApiResult<Page<Employee>> filter(SearchEmployeeDTO searchEmployeeDTO);
 
 }

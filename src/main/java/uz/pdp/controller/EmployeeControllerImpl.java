@@ -1,9 +1,13 @@
 package uz.pdp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import uz.pdp.entity.Employee;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.filterPayload.enums.SearchEmployeeDTO;
 import uz.pdp.payload.response_DTO.EmployeeDTO;
 import uz.pdp.service.EmployeeService;
 
@@ -39,5 +43,10 @@ public class EmployeeControllerImpl implements EmployeeController{
     @Override
     public ApiResult<String> delete(UUID id) {
         return employeeService.delete(id);
+    }
+
+    @Override
+    public ApiResult<Page<Employee>> filter(SearchEmployeeDTO searchEmployeeDTO) {
+        return employeeService.filter(searchEmployeeDTO);
     }
 }

@@ -1,8 +1,13 @@
 package uz.pdp.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.pdp.entity.Employee;
+import uz.pdp.payload.SearchDTO;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.filterPayload.enums.SearchEmployeeDTO;
 import uz.pdp.payload.response_DTO.EmployeeDTO;
 import uz.pdp.util.RestConstants;
 
@@ -29,6 +34,9 @@ public interface EmployeeController {
 
     @DeleteMapping("/{id}")
     ApiResult<String> delete(@PathVariable UUID id);
+
+    @GetMapping("/getFilter")
+    ApiResult<Page<Employee>> filter(SearchEmployeeDTO searchEmployeeDTO);
 
 
 }

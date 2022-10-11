@@ -32,7 +32,6 @@ public class Role {
     private Set<PermissionEnum> permissions;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private RoleTypeEnum roleType;
 
 

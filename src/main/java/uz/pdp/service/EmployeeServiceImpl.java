@@ -2,7 +2,10 @@ package uz.pdp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.entity.Employee;
@@ -11,6 +14,7 @@ import uz.pdp.entity.User;
 import uz.pdp.exceptions.RestException;
 import uz.pdp.payload.add_DTO.AddEmployeeDTO;
 import uz.pdp.payload.ApiResult;
+import uz.pdp.payload.filterPayload.enums.SearchEmployeeDTO;
 import uz.pdp.payload.response_DTO.EmployeeDTO;
 import uz.pdp.repository.EmployeeRepository;
 import uz.pdp.repository.RoleRepository;
@@ -119,6 +123,15 @@ public class EmployeeServiceImpl implements EmployeeService {
             return ApiResult.successResponse("deleted");
         }
         throw RestException.restThrow("id does not exist", HttpStatus.CONFLICT);
+    }
+
+    @Override
+    public ApiResult<Page<Employee>> filter(SearchEmployeeDTO searchEmployeeDTO) {
+        return ApiResult.successResponse(employeeRepository
+                        .searchBy(searchEmployeeDTO.getEmployeeType(),
+                                searchEmployeeDTO.getSearchingField(),
+                                PageRequest.of(searchEmployeeDTO.getPage(),
+                                        searchEmployeeDTO.getSize())));
     }
 
 
