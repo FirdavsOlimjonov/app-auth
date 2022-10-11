@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.pdp.entity.enums.PageEnum;
+import uz.pdp.payload.AddPageDTO;
 
 import javax.persistence.*;
 
@@ -33,6 +34,14 @@ public class Page {
     private Role role;
 
     private int priority;
+
+    public static Page mapToPage(AddPageDTO addPageDTO, Role role){
+        Page page = new Page();
+        page.setPage(addPageDTO.getPage());
+        page.setPriority(addPageDTO.getPriority());
+        page.setRole(role);
+        return page;
+    }
 
     public Page(PageEnum page, Role role, int priority) {
         this.page = page;

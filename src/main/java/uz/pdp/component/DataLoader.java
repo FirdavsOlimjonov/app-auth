@@ -7,18 +7,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import uz.pdp.entity.Employee;
+import uz.pdp.entity.Page;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
+import uz.pdp.entity.enums.PageEnum;
 import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.enums.RoleTypeEnum;
 import uz.pdp.exceptions.RestException;
-import uz.pdp.repository.ClientRepository;
-import uz.pdp.repository.EmployeeRepository;
-import uz.pdp.repository.RoleRepository;
-import uz.pdp.repository.UserRepository;
+import uz.pdp.repository.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class DataLoader implements CommandLineRunner {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
+    private final PageRepository pageRepository;
     private final ClientRepository clientRepository;
 
     @Value("${spring.jpa.hibernate.ddl-auto}")
@@ -54,8 +57,22 @@ public class DataLoader implements CommandLineRunner {
             roleSuperAdmin.setRoleType(RoleTypeEnum.ADMIN);
             roleSuperAdmin.setDescription("Owner of this project");
             roleSuperAdmin.setPermissions(Set.of(PermissionEnum.values()));
+
+
             roleSuperAdmin = roleRepository.save(roleSuperAdmin);
 
+            Role finalRole = roleSuperAdmin;
+            AtomicInteger k = new AtomicInteger(1);
+
+            Set<Page> pages = new HashSet<>(
+                    pageRepository
+                            .saveAll(
+                                    Arrays.stream(PageEnum.values())
+                                            .map(pageEnum -> new Page(pageEnum, finalRole, k.getAndIncrement()))
+                                            .collect(Collectors.toSet())));
+
+            roleSuperAdmin.setPages(pages);
+            roleSuperAdmin = roleRepository.save(roleSuperAdmin);
             Employee superAdmin = new Employee();
             superAdmin.setUser(admin);
             superAdmin.setRole(roleSuperAdmin);

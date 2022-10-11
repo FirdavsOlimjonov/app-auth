@@ -8,6 +8,7 @@ import uz.pdp.entity.Page;
 import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
 import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.PageDTO;
 import uz.pdp.payload.add_DTO.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
@@ -43,13 +44,8 @@ public class RoleServiceImpl implements RoleService {
         Set<Page> pages =
                 addRoleDTO.getPages()
                         .stream()
-                        .map(addPageDTO -> {
-                            Page page = new Page();
-                            page.setPage(addPageDTO.getPage());
-                            page.setPriority(addPageDTO.getPriority());
-                            page.setRole(role);
-                            return page;
-                        }).collect(Collectors.toSet());
+                        .map(addPageDTO -> Page.mapToPage(addPageDTO, role))
+                        .collect(Collectors.toSet());
 
         role.setPages(pages);
         pageRepository.saveAll(pages);
@@ -114,7 +110,11 @@ public class RoleServiceImpl implements RoleService {
                 role.getId(),
                 role.getName(),
                 role.getDescription(),
-                role.getPermissions()
+                role.getPermissions(),
+                role.getPages()
+                        .stream()
+                        .map(PageDTO::mapToDTO)
+                        .collect(Collectors.toSet())
         );
     }
 }
