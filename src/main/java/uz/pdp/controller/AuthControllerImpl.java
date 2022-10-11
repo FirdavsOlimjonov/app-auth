@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import uz.pdp.entity.User;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.SignDTO;
 import uz.pdp.payload.SignInForEmployeeDTO;
@@ -18,7 +17,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class AuthControllerImpl implements AuthController {
+public class AuthControllerImpl implements AuthController{
     private final AuthService authService;
 
     public ApiResult<Boolean> signUp(@RequestBody @Valid SignDTO signDTO) {

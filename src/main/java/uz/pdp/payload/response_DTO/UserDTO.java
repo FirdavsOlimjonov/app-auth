@@ -1,7 +1,6 @@
 package uz.pdp.payload.response_DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.api.Page;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +10,9 @@ import uz.pdp.entity.User;
 import uz.pdp.entity.enums.PageEnum;
 import uz.pdp.entity.enums.PermissionEnum;
 
-import javax.persistence.Column;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -50,7 +50,6 @@ public class UserDTO {
         if (Objects.nonNull(role)) {
             this.permissions = role.getPermissions();
             setPages(role);
-
         }
     }
 

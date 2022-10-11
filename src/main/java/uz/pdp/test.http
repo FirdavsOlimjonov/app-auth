@@ -4,6 +4,6 @@ Content-Type: application/json
 
 {
   "phoneNumber": "+998930850236",
-  "password":"root123"
+  "password": "root123"
 }
 

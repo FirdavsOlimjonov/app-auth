@@ -18,7 +18,6 @@ public interface RoleController {
     @PostMapping
     ApiResult<RoleDTO> add(@Valid @RequestBody AddRoleDTO addRoleDTO);
 
-
     @PutMapping("/{id}")
     ApiResult<Boolean> edit(@Valid AddRoleDTO addRoleDTO, @PathVariable @NotNull Integer id);
 
