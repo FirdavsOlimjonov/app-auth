@@ -14,7 +14,6 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
-
     private final UserService userService;
 
     @Override
