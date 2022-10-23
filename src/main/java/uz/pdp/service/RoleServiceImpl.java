@@ -4,16 +4,18 @@ package uz.pdp.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.pdp.entity.Page;
 import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
 import uz.pdp.exceptions.RestException;
+import uz.pdp.payload.PageDTO;
 import uz.pdp.payload.add_DTO.AddRoleDTO;
 import uz.pdp.payload.ApiResult;
 import uz.pdp.payload.RoleDTO;
+import uz.pdp.repository.PageRepository;
 import uz.pdp.repository.RoleRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+    private final PageRepository pageRepository;
 
     private final ApiResult<PermissionEnum[]> apiResultAllPermissions =
             ApiResult.successResponse(PermissionEnum.values());
@@ -31,9 +34,22 @@ public class RoleServiceImpl implements RoleService {
             throw RestException.restThrow("Such role already exists", HttpStatus.CONFLICT);
 
         Role role = addRoleDTO.mapToRole();
-        roleRepository.save(role);
+        Role save = roleRepository.save(role);
 
-        return ApiResult.successResponse(mapRoleToRoleDTO(role));
+        return ApiResult.successResponse(mapRoleToRoleDTO(setPages(addRoleDTO, save)));
+    }
+
+    private Role setPages(AddRoleDTO addRoleDTO, Role role) {
+
+        Set<Page> pages =
+                addRoleDTO.getPages()
+                        .stream()
+                        .map(addPageDTO -> Page.mapToPage(addPageDTO, role))
+                        .collect(Collectors.toSet());
+
+        role.setPages(pages);
+        pageRepository.saveAll(pages);
+        return roleRepository.save(role);
     }
 
 
@@ -94,7 +110,11 @@ public class RoleServiceImpl implements RoleService {
                 role.getId(),
                 role.getName(),
                 role.getDescription(),
-                role.getPermissions()
+                role.getPermissions(),
+                role.getPages()
+                        .stream()
+                        .map(PageDTO::mapToDTO)
+                        .collect(Collectors.toSet())
         );
     }
 }

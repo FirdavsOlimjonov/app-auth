@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
+import uz.pdp.entity.enums.PermissionEnum;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -29,6 +29,8 @@ public class RoleDTO {
     @NotNull
     @NotEmpty
     private Set<PermissionEnum> permissions;
+
+    private Set<PageDTO> pages;
 
     public RoleDTO(Role role) {
         this.id = role.getId();

@@ -27,6 +27,9 @@ public class Role {
     @Column(nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "role", cascade = CascadeType.PERSIST)
+    private Set<Page> pages;
+
     @ElementCollection
     @Enumerated(value = EnumType.STRING)
     private Set<PermissionEnum> permissions;

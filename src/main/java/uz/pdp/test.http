@@ -1,9 +1,9 @@
 ###
-POST http://localhost:81/api/auth/v1/auth/sign-in
+POST http://localhost:8090/api/auth/v1/auth/sign-in
 Content-Type: application/json
 
 {
   "phoneNumber": "+998930850236",
-  "password":"root123"
+  "password": "root123"
 }
 

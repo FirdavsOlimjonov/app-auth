@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.Role;
+import uz.pdp.entity.enums.PermissionEnum;
 import uz.pdp.entity.enums.RoleTypeEnum;
+import uz.pdp.payload.AddPageDTO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -30,8 +31,15 @@ public class AddRoleDTO {
     @NotEmpty
     private Set<PermissionEnum> permissions;
 
+    private Set<AddPageDTO> pages;
+
     public Role mapToRole() {
-        return new Role(null, name, description, permissions, RoleTypeEnum.OTHER);
+        Role role = new Role();
+        role.setName(name);
+        role.setDescription(description);
+        role.setPermissions(permissions);
+        role.setRoleType(RoleTypeEnum.OTHER);
+        return role;
     }
 
 }

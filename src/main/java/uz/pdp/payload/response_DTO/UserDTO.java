@@ -1,17 +1,15 @@
 package uz.pdp.payload.response_DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.api.Page;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.pdp.entity.Role;
 import uz.pdp.entity.User;
-import uz.pdp.entity.enums.PageEnum;
 import uz.pdp.entity.enums.PermissionEnum;
+import uz.pdp.payload.PageDTO;
 
-import javax.persistence.Column;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,7 +36,7 @@ public class UserDTO {
 
     private String name;
 
-    private Set<PageEnum> pages;
+    private SortedSet<PageDTO> pages;
 
     public UserDTO(User user, Role role) {
         this.id = user.getId();
@@ -50,7 +48,6 @@ public class UserDTO {
         if (Objects.nonNull(role)) {
             this.permissions = role.getPermissions();
             setPages(role);
-
         }
     }
 
@@ -61,11 +58,16 @@ public class UserDTO {
     private void setPages(Role role) {
         if (Objects.nonNull(role) && Objects.nonNull(role.getPermissions())) {
             //todo ROLE PAGE DYNAMIC
-            this.pages = role
-                    .getPermissions()
+
+            Comparator<PageDTO> comparator = Comparator.comparingInt(PageDTO::getPriority);
+
+            SortedSet<PageDTO> pageDTOS = new TreeSet<>(comparator);
+
+            pageDTOS.addAll(role.getPages()
                     .stream()
-                    .map(PermissionEnum::getPage)
-                    .collect(Collectors.toSet());
+                    .map(PageDTO::mapToDTO)
+                    .collect(Collectors.toSet()));
+            this.pages = pageDTOS;
         }
     }
 
