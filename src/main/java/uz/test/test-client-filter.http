@@ -1,6 +1,6 @@
 POST http://localhost:8081/api/auth/v1/client/filter-list?page=0&size=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODUwMjM2IiwiaWF0IjoxNjY0OTczNTAwLCJleHAiOjE2NjUwNDU1MDB9.95A-21ggofYzM6-605M4QYcld7rv4lbqm59lJA1EWkNAx2fAfa8VQfjIiCx8iRtdX7YeMCS23Tm54czJGlboCw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrOTk4OTMwODUwMjM2IiwiaWF0IjoxNjY1MzczOTU0LCJleHAiOjE2NjU0NDU5NTR9.HgF4SSA9-_BDTDbe6ebknWTF48VzMP9f-x2b9gwCBc0U5eGBRbVBClCvHPuCMF1u4GXCVM_3VEYOPYGZ3peY-g
 
 {
   "filtering": {
