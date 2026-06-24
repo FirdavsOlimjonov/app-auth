@@ -1,6 +1,7 @@
 use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
+use std::path::Path;
 
 fn main() {
     const BUILTINS: [&str; 3] = ["type", "echo", "exit"];
@@ -45,22 +46,19 @@ fn main() {
         }
     }
 
-    fn find_executable(command: &str) -> Option<String> {
+    #[cfg(not(unix))]
+    fn is_executable(path: &Path) -> bool {
+        path.is_file()
+    }
+
+    fn find_executable(cmd: &str) -> Option<String> {
         let path_var = env::var("PATH").ok()?;
 
         for dir in env::split_paths(&path_var) {
-            let full_path = dir.join(command);
+            let candidate = dir.join(cmd);
 
-            if full_path.is_file() {
-                return Some(full_path.to_string_lossy().into_owned());
-            }
-
-            #[cfg(windows)]
-            {
-                let exe_path = dir.join(format!("{}.exe", command));
-                if exe_path.is_file() {
-                    return Some(exe_path.to_string_lossy().into_owned());
-                }
+            if candidate.is_file() && is_executable(&candidate) {
+                return Some(candidate.to_string_lossy().into_owned());
             }
         }
 
