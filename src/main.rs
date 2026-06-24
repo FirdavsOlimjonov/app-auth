@@ -1,35 +1,69 @@
+use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
 fn main() {
-    // TODO: Uncomment the code below to pass the first stage
+    const BUILTINS: [&str; 3] = ["type", "echo", "exit"];
+
     loop {
         print!("$ ");
         io::stdout().flush().unwrap();
 
-        // Wait for user input
-        let mut command = String::new();
-        io::stdin().read_line(&mut command).unwrap();
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
 
-        command = command.trim().to_string();
-        if command == "exit" {
-            break;
-        }
+        let input = input.trim();
 
-        if command.starts_with("echo") {
-            println!("{}", &command[4..].trim());
-            continue;
-        }
+        let mut parts = input.split_whitespace();
+        let command = parts.next().unwrap_or("");
 
-        let builtins = vec!["type", "echo", "exit"];
-        if command.starts_with("type") {
-            if builtins.contains(&command[5..].trim()) {
-                println!("{} is a shell builtin", &command[5..].trim());
-                continue;
+        match command {
+            "exit" => break,
+
+            "echo" => {
+                let output = parts.collect::<Vec<_>>().join(" ");
+                println!("{output}");
             }
-            println!("{}: not found", &command[5..].trim());
-            continue;
+
+            "type" => {
+                let arg = parts.next().unwrap_or("");
+
+                if BUILTINS.contains(&arg) {
+                    println!("{arg} is a shell builtin");
+                } else if let Some(path) = find_executable(arg) {
+                    println!("{arg} is {path}");
+                } else {
+                    println!("{arg}: not found");
+                }
+            }
+
+            "" => {}
+
+            _ => {
+                println!("{input}: command not found");
+            }
         }
-        println!("{}: command not found", command.trim());
+    }
+
+    fn find_executable(command: &str) -> Option<String> {
+        let path_var = env::var("PATH").ok()?;
+
+        for dir in env::split_paths(&path_var) {
+            let full_path = dir.join(command);
+
+            if full_path.is_file() {
+                return Some(full_path.to_string_lossy().into_owned());
+            }
+
+            #[cfg(windows)]
+            {
+                let exe_path = dir.join(format!("{}.exe", command));
+                if exe_path.is_file() {
+                    return Some(exe_path.to_string_lossy().into_owned());
+                }
+            }
+        }
+
+        None
     }
 }
