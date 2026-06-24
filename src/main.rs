@@ -20,6 +20,16 @@ fn main() {
             println!("{}", &command[4..].trim());
             continue;
         }
+
+        let builtins = vec!["type", "echo", "exit"];
+        if command.starts_with("type") {
+            if builtins.contains(&command[5..].trim()) {
+                println!("{} is a shell builtin", &command[5..].trim());
+                continue;
+            }
+            println!("{}: command not found", &command[5..].trim());
+            continue;
+        }
         println!("{}: command not found", command.trim());
     }
 }
