@@ -46,6 +46,15 @@ fn main() {
         }
     }
 
+    #[cfg(unix)]
+    fn is_executable(path: &Path) -> bool {
+        use std::os::unix::fs::PermissionsExt;
+
+        std::fs::metadata(path)
+            .map(|m| m.permissions().mode() & 0o111 != 0)
+            .unwrap_or(false)
+    }
+
     #[cfg(not(unix))]
     fn is_executable(path: &Path) -> bool {
         path.is_file()
