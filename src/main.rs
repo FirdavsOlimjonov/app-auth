@@ -15,6 +15,11 @@ fn main() {
         if command == "exit" {
             break;
         }
+
+        if command.starts_with("eco") {
+            println!("{}", &command[3..].trim());
+            continue;
+        }
         println!("{}: command not found", command.trim());
     }
 }
