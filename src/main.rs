@@ -27,7 +27,7 @@ fn main() {
                 println!("{} is a shell builtin", &command[5..].trim());
                 continue;
             }
-            println!("{}: command not found", &command[5..].trim());
+            println!("{}: not found", &command[5..].trim());
             continue;
         }
         println!("{}: command not found", command.trim());
