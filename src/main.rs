@@ -2,6 +2,7 @@ use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::path::Path;
+use std::process::Command;
 
 fn main() {
     const BUILTINS: [&str; 3] = ["type", "echo", "exit"];
@@ -41,7 +42,17 @@ fn main() {
             "" => {}
 
             _ => {
-                println!("{input}: command not found");
+                if let Some(path) = find_executable(command) {
+                    let mut child = Command::new(command)
+                        .args(parts)
+                        .current_dir(std::env::current_dir().unwrap())
+                        .spawn()
+                        .expect("failed to execute command");
+
+                    child.wait().unwrap();
+                } else {
+                    println!("{command}: command not found");
+                }
             }
         }
     }
