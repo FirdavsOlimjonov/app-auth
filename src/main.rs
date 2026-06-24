@@ -16,7 +16,7 @@ fn main() {
             break;
         }
 
-        if command.starts_with("eco") {
+        if command.starts_with("echo") {
             println!("{}", &command[3..].trim());
             continue;
         }
