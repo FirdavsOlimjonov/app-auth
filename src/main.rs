@@ -57,7 +57,7 @@ fn main() {
                 if let Some(_path) = find_executable(command) {
                     let mut child = Command::new(command)
                         .args(parts)
-                        .current_dir(std::env::current_dir().unwrap())
+                        .current_dir(env::current_dir().unwrap())
                         .spawn()
                         .expect("failed to execute command");
 
@@ -98,6 +98,20 @@ fn main() {
     }
 
     fn change_directory(target_path: &str) {
+        if target_path == "~" {
+            let home_var = env::var("HOME").or_else(|_| env::var("USERPROFILE"));
+
+            match home_var {
+                Ok(path) => set_target_path(&path),
+                Err(_) => eprintln!("Could not find the home directory environment variable."),
+            }
+
+            return;
+        }
+
+        set_target_path(target_path);
+    }
+    fn set_target_path(target_path: &str) {
         // 1. Convert the string into a Path slice
         let path = Path::new(target_path);
 
