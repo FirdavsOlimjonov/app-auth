@@ -4,6 +4,9 @@ use std::io::{self, Write};
 use std::path::Path;
 use std::process::Command;
 
+#[cfg(unix)]
+use std::os::unix::process::CommandExt;
+
 fn main() {
     const BUILTINS: [&str; 5] = ["type", "echo", "exit", "pwd", "cd"];
 
@@ -16,19 +19,24 @@ fn main() {
 
         let input = input.trim();
 
-        let mut parts = input.split_whitespace();
-        let command = parts.next().unwrap_or("");
+        let parts = parse_command(input);
+
+        if parts.is_empty() {
+            continue;
+        }
+
+        let command = parts[0].as_str();
+        let args = &parts[1..];
 
         match command {
             "exit" => break,
 
             "echo" => {
-                let output = parts.collect::<Vec<_>>().join(" ");
-                println!("{output}");
+                println!("{}", args.join(" "));
             }
 
             "type" => {
-                let arg = parts.next().unwrap_or("");
+                let arg = args.first().map(|s| s.as_str()).unwrap_or("");
 
                 if BUILTINS.contains(&arg) {
                     println!("{arg} is a shell builtin");
@@ -47,21 +55,25 @@ fn main() {
             }
 
             "cd" => {
-                let new_path = parts.next().unwrap_or("");
+                let new_path = args.first().map(|s| s.as_str()).unwrap_or("");
                 change_directory(new_path);
             }
 
             "" => {}
 
             _ => {
-                if let Some(_path) = find_executable(command) {
-                    let mut child = Command::new(command)
-                        .args(parts)
-                        .current_dir(env::current_dir().unwrap())
-                        .spawn()
-                        .expect("failed to execute command");
+                if let Some(path) = find_executable(command) {
+                    let mut child = Command::new(&path);
 
-                    child.wait().unwrap();
+                    #[cfg(unix)]
+                    child.arg0(command);
+
+                    child
+                        .args(args)
+                        .spawn()
+                        .expect("failed to execute command")
+                        .wait()
+                        .unwrap();
                 } else {
                     println!("{command}: command not found");
                 }
@@ -127,5 +139,31 @@ fn main() {
                 println!("cd: {}: No such file or directory", target_path);
             }
         }
+    }
+
+    fn parse_command(input: &str) -> Vec<String> {
+        let mut args = Vec::new();
+        let mut current = String::new();
+        let mut in_quotes = false;
+
+        for ch in input.chars() {
+            match ch {
+                '\'' => {
+                    in_quotes = !in_quotes;
+                }
+                ' ' if !in_quotes => {
+                    if !current.is_empty() {
+                        args.push(std::mem::take(&mut current));
+                    }
+                }
+                _ => current.push(ch),
+            }
+        }
+
+        if !current.is_empty() {
+            args.push(current);
+        }
+
+        args
     }
 }
