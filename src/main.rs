@@ -1,11 +1,11 @@
 use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
-use std::path::Path;
 use std::process::Command;
+use std::path::{self, Path};
 
 fn main() {
-    const BUILTINS: [&str; 3] = ["type", "echo", "exit"];
+    const BUILTINS: [&str; 4] = ["type", "echo", "exit", "pwd"];
 
     loop {
         print!("$ ");
@@ -39,10 +39,17 @@ fn main() {
                 }
             }
 
+            "pwd" => {
+                // Correctly fetches the current working directory variable dynamically
+                let current_working_directory = env::current_dir().unwrap();
+
+                println!("{}", current_working_directory.display());
+            }
+
             "" => {}
 
             _ => {
-                if let Some(path) = find_executable(command) {
+                if let Some(_path) = find_executable(command) {
                     let mut child = Command::new(command)
                         .args(parts)
                         .current_dir(std::env::current_dir().unwrap())
