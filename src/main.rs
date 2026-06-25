@@ -157,13 +157,29 @@ fn main() {
 
         for ch in input.chars() {
             if escaped {
-                current.push(ch);
+                match state {
+                    QuoteState::Double => {
+                        match ch {
+                            '"' | '\\' => current.push(ch),
+                            _ => {
+                                current.push('\\');
+                                current.push(ch);
+                            }
+                        }
+                    }
+                    _ => current.push(ch),
+                }
+
                 escaped = false;
                 continue;
             }
 
             match ch {
                 '\\' if state == QuoteState::None => {
+                    escaped = true;
+                }
+
+                '\\' if state == QuoteState::Double => {
                     escaped = true;
                 }
 
