@@ -48,9 +48,7 @@ fn main() {
 
             "cd" => {
                 let new_path = parts.next().unwrap_or("");
-                if !change_directory(new_path) {
-                    println!("cd: {}: No such file or directory", new_path);
-                };
+                change_directory(new_path);
             }
 
             "" => {}
@@ -99,7 +97,7 @@ fn main() {
         None
     }
 
-    fn change_directory(target_path: &str) -> bool {
+    fn change_directory(target_path: &str) {
         // 1. Convert the string into a Path slice
         let path = Path::new(target_path);
 
@@ -108,12 +106,11 @@ fn main() {
             Ok(_) => {
                 // Success! Next time you call env::current_dir(), it will reflect this change.
                 // println!("Directory successfully changed to: {}", target_path);
-                true
             }
             Err(_err) => {
                 // Handles missing folders or permission issues (e.g., "cd: /invalid: No such file or directory")
                 // eprintln!("cd: {}", target_path);
-                false
+                println!("cd: {}: No such file or directory", target_path);
             }
         }
     }
