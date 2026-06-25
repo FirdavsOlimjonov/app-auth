@@ -144,6 +144,7 @@ fn main() {
     fn parse_command(input: &str) -> Vec<String> {
         let mut args = Vec::new();
         let mut current = String::new();
+        let mut escaped = false;
 
         #[derive(PartialEq)]
         enum QuoteState {
@@ -155,10 +156,21 @@ fn main() {
         let mut state = QuoteState::None;
 
         for ch in input.chars() {
+            if escaped {
+                current.push(ch);
+                escaped = false;
+                continue;
+            }
+
             match ch {
+                '\\' if state == QuoteState::None => {
+                    escaped = true;
+                }
+
                 '\'' if state == QuoteState::None => {
                     state = QuoteState::Single;
                 }
+
                 '\'' if state == QuoteState::Single => {
                     state = QuoteState::None;
                 }
@@ -166,6 +178,7 @@ fn main() {
                 '"' if state == QuoteState::None => {
                     state = QuoteState::Double;
                 }
+
                 '"' if state == QuoteState::Double => {
                     state = QuoteState::None;
                 }
