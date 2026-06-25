@@ -1,11 +1,11 @@
 use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
+use std::path::Path;
 use std::process::Command;
-use std::path::{self, Path};
 
 fn main() {
-    const BUILTINS: [&str; 4] = ["type", "echo", "exit", "pwd"];
+    const BUILTINS: [&str; 5] = ["type", "echo", "exit", "pwd", "cd"];
 
     loop {
         print!("$ ");
@@ -44,6 +44,13 @@ fn main() {
                 let current_working_directory = env::current_dir().unwrap();
 
                 println!("{}", current_working_directory.display());
+            }
+
+            "cd" => {
+                let new_path = parts.next().unwrap_or("");
+                if !change_directory(new_path) {
+                    println!("cd: {}: No such file or directory", new_path);
+                };
             }
 
             "" => {}
@@ -90,5 +97,24 @@ fn main() {
         }
 
         None
+    }
+
+    fn change_directory(target_path: &str) -> bool {
+        // 1. Convert the string into a Path slice
+        let path = Path::new(target_path);
+
+        // 2. Attempt to change the process's working directory
+        match env::set_current_dir(&path) {
+            Ok(_) => {
+                // Success! Next time you call env::current_dir(), it will reflect this change.
+                // println!("Directory successfully changed to: {}", target_path);
+                true
+            }
+            Err(_err) => {
+                // Handles missing folders or permission issues (e.g., "cd: /invalid: No such file or directory")
+                // eprintln!("cd: {}", target_path);
+                false
+            }
+        }
     }
 }
