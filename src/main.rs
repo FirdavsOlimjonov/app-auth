@@ -1,218 +1,269 @@
 use std::env;
-#[allow(unused_imports)]
-use std::io::{self, Write};
-use std::path::Path;
+use std::env::{current_dir, set_current_dir, split_paths, var};
+#[warn(unused_imports)]
+use std::fs::{metadata, write};
+#[warn(unused_imports)]
+use std::io::{self, Write, stderr, stdin, stdout};
+use std::mem::take;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 #[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
+#[cfg(unix)]
 use std::os::unix::process::CommandExt;
 
-fn main() {
-    const BUILTINS: [&str; 5] = ["type", "echo", "exit", "pwd", "cd"];
+#[derive(Debug, PartialEq)]
+struct ExecOutput {
+    out: Vec<u8>,
+    err: Vec<u8>,
+    exit: bool,
+}
 
+impl ExecOutput {
+    fn new() -> Self {
+        Self {
+            out: vec![],
+            err: vec![],
+            exit: false,
+        }
+    }
+
+    fn exit() -> Self {
+        Self {
+            out: vec![],
+            err: vec![],
+            exit: true,
+        }
+    }
+
+    fn err(msg: impl Into<String>) -> Self {
+        Self {
+            out: vec![],
+            err: msg.into().into_bytes(),
+            exit: false,
+        }
+    }
+}
+
+impl From<String> for ExecOutput {
+    fn from(value: String) -> Self {
+        Self {
+            out: value.into_bytes(),
+            err: vec![],
+            exit: false,
+        }
+    }
+}
+
+impl From<std::process::Output> for ExecOutput {
+    fn from(output: std::process::Output) -> Self {
+        Self {
+            out: output.stdout,
+            err: output.stderr,
+            exit: false,
+        }
+    }
+}
+
+const BUILTINS: [&str; 5] = ["type", "echo", "exit", "pwd", "cd"];
+
+fn main() {
     loop {
         print!("$ ");
-        io::stdout().flush().unwrap();
+        stdout().flush().unwrap();
 
         let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
+        stdin().read_line(&mut input).unwrap();
 
-        let input = input.trim();
+        let args = split(&input);
 
-        let parts = parse_command(input);
-
-        if parts.is_empty() {
+        if args.is_empty() {
             continue;
         }
 
-        let command = parts[0].as_str();
-        let args = &parts[1..];
+        let refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
 
-        match command {
-            "exit" => break,
+        let ExecOutput { out, err, exit } = exec(&refs);
 
-            "echo" => {
-                println!("{}", args.join(" "));
-            }
+        stdout().write_all(&out).ok();
+        stderr().write_all(&err).ok();
 
-            "type" => {
-                let arg = args.first().map(|s| s.as_str()).unwrap_or("");
-
-                if BUILTINS.contains(&arg) {
-                    println!("{arg} is a shell builtin");
-                } else if let Some(path) = find_executable(arg) {
-                    println!("{arg} is {path}");
-                } else {
-                    println!("{arg}: not found");
-                }
-            }
-
-            "pwd" => {
-                // Correctly fetches the current working directory variable dynamically
-                let current_working_directory = env::current_dir().unwrap();
-
-                println!("{}", current_working_directory.display());
-            }
-
-            "cd" => {
-                let new_path = args.first().map(|s| s.as_str()).unwrap_or("");
-                change_directory(new_path);
-            }
-
-            "" => {}
-
-            _ => {
-                if let Some(path) = find_executable(command) {
-                    let mut child = Command::new(&path);
-
-                    #[cfg(unix)]
-                    child.arg0(command);
-
-                    child
-                        .args(args)
-                        .spawn()
-                        .expect("failed to execute command")
-                        .wait()
-                        .unwrap();
-                } else {
-                    println!("{command}: command not found");
-                }
-            }
+        if exit {
+            break;
         }
     }
+}
 
-    #[cfg(unix)]
-    fn is_executable(path: &Path) -> bool {
-        use std::os::unix::fs::PermissionsExt;
+fn exec(args: &[&str]) -> ExecOutput {
+    match *args {
+        [] => ExecOutput::new(),
 
-        std::fs::metadata(path)
-            .map(|m| m.permissions().mode() & 0o111 != 0)
-            .unwrap_or(false)
-    }
+        [ref head @ .., ">" | "1>", path] => {
+            let mut output = exec(head);
+            write(path, take(&mut output.out)).ok();
+            output
+        }
 
-    #[cfg(not(unix))]
-    fn is_executable(path: &Path) -> bool {
-        path.is_file()
-    }
+        [ref head @ .., "2>", path] => {
+            let mut output = exec(head);
+            write(path, take(&mut output.err)).ok();
+            output
+        }
 
-    fn find_executable(cmd: &str) -> Option<String> {
-        let path_var = env::var("PATH").ok()?;
+        ["exit", ..] => ExecOutput::exit(),
 
-        for dir in env::split_paths(&path_var) {
-            let candidate = dir.join(cmd);
+        ["echo", ref rest @ ..] => format!("{}\n", rest.join(" ")).into(),
 
-            if candidate.is_file() && is_executable(&candidate) {
-                return Some(candidate.to_string_lossy().into_owned());
+        ["pwd"] => format!("{}\n", current_dir().unwrap().display()).into(),
+
+        ["cd", path] => {
+            let result = if path == "~" {
+                var("HOME")
+                    .or_else(|_| var("USERPROFILE"))
+                    .ok()
+                    .and_then(|p| set_current_dir(p).ok())
+            } else {
+                set_current_dir(path).ok()
+            };
+
+            match result {
+                Some(_) => ExecOutput::new(),
+                None => ExecOutput::err(format!("cd: {}: No such file or directory\n", path)),
             }
         }
 
-        None
-    }
-
-    fn change_directory(target_path: &str) {
-        if target_path == "~" {
-            let home_var = env::var("HOME").or_else(|_| env::var("USERPROFILE"));
-
-            match home_var {
-                Ok(path) => set_target_path(&path),
-                Err(_) => eprintln!("Could not find the home directory environment variable."),
+        ["type", cmd] => {
+            if BUILTINS.contains(&cmd) {
+                format!("{cmd} is a shell builtin\n").into()
+            } else if let Some(path) = find_executable(cmd) {
+                format!("{cmd} is {}\n", path.display()).into()
+            } else {
+                ExecOutput::err(format!("{cmd}: not found\n"))
             }
-
-            return;
         }
 
-        set_target_path(target_path);
-    }
-    fn set_target_path(target_path: &str) {
-        // 1. Convert the string into a Path slice
-        let path = Path::new(target_path);
+        [cmd, ref cmd_args @ ..] => {
+            if let Some(path) = find_executable(cmd) {
+                let mut command = Command::new(&path);
 
-        // 2. Attempt to change the process's working directory
-        match env::set_current_dir(&path) {
-            Ok(_) => {
-                // Success! Next time you call env::current_dir(), it will reflect this change.
-                // println!("Directory successfully changed to: {}", target_path);
-            }
-            Err(_err) => {
-                // Handles missing folders or permission issues (e.g., "cd: /invalid: No such file or directory")
-                // eprintln!("cd: {}", target_path);
-                println!("cd: {}: No such file or directory", target_path);
+                #[cfg(unix)]
+                command.arg0(cmd);
+
+                match command.args(cmd_args).output() {
+                    Ok(output) => output.into(),
+                    Err(_) => ExecOutput::err(format!("{cmd}: command not found\n")),
+                }
+            } else {
+                ExecOutput::err(format!("{cmd}: command not found\n"))
             }
         }
     }
+}
 
-    fn parse_command(input: &str) -> Vec<String> {
-        let mut args = Vec::new();
-        let mut current = String::new();
-        let mut escaped = false;
+fn split(input: &str) -> Vec<String> {
+    let mut args = Vec::new();
+    let mut current = String::new();
 
-        #[derive(PartialEq)]
-        enum QuoteState {
-            None,
-            Single,
-            Double,
-        }
-
-        let mut state = QuoteState::None;
-
-        for ch in input.chars() {
-            if escaped {
-                match state {
-                    QuoteState::Double => {
-                        match ch {
-                            '"' | '\\' => current.push(ch),
-                            _ => {
-                                current.push('\\');
-                                current.push(ch);
-                            }
-                        }
-                    }
-                    _ => current.push(ch),
-                }
-
-                escaped = false;
-                continue;
-            }
-
-            match ch {
-                '\\' if state == QuoteState::None => {
-                    escaped = true;
-                }
-
-                '\\' if state == QuoteState::Double => {
-                    escaped = true;
-                }
-
-                '\'' if state == QuoteState::None => {
-                    state = QuoteState::Single;
-                }
-
-                '\'' if state == QuoteState::Single => {
-                    state = QuoteState::None;
-                }
-
-                '"' if state == QuoteState::None => {
-                    state = QuoteState::Double;
-                }
-
-                '"' if state == QuoteState::Double => {
-                    state = QuoteState::None;
-                }
-
-                ' ' | '\t' if state == QuoteState::None => {
-                    if !current.is_empty() {
-                        args.push(std::mem::take(&mut current));
-                    }
-                }
-
-                _ => current.push(ch),
-            }
-        }
-
-        if !current.is_empty() {
-            args.push(current);
-        }
-
-        args
+    #[derive(Clone, Copy, PartialEq)]
+    enum State {
+        None,
+        Single,
+        Double,
     }
+
+    let mut state = State::None;
+    let chars: Vec<char> = input.trim_end().chars().collect();
+
+    let mut iter = &chars[..];
+
+    while !iter.is_empty() {
+        iter = match (iter, state) {
+            (['\'', tail @ ..], State::None) => {
+                state = State::Single;
+                tail
+            }
+
+            (['\'', tail @ ..], State::Single) => {
+                state = State::None;
+                tail
+            }
+
+            ([c, tail @ ..], State::Single) => {
+                current.push(*c);
+                tail
+            }
+
+            (['"', tail @ ..], State::None) => {
+                state = State::Double;
+                tail
+            }
+
+            (['"', tail @ ..], State::Double) => {
+                state = State::None;
+                tail
+            }
+
+            (['\\', c @ ('"' | '\\' | '$' | '`' | '\n'), tail @ ..], State::Double) => {
+                current.push(*c);
+                tail
+            }
+
+            ([c, tail @ ..], State::Double) => {
+                current.push(*c);
+                tail
+            }
+
+            (['\\', c, tail @ ..], _) => {
+                current.push(*c);
+                tail
+            }
+
+            ([c, tail @ ..], _) if c.is_whitespace() => {
+                if !current.is_empty() {
+                    args.push(take(&mut current));
+                }
+                tail
+            }
+
+            ([c, tail @ ..], _) => {
+                current.push(*c);
+                tail
+            }
+
+            _ => unreachable!(),
+        };
+    }
+
+    if !current.is_empty() {
+        args.push(current);
+    }
+
+    args
+}
+
+#[cfg(unix)]
+fn is_executable(path: &Path) -> bool {
+    metadata(path)
+        .map(|m| m.mode() & 0o111 != 0)
+        .unwrap_or(false)
+}
+
+#[cfg(not(unix))]
+fn is_executable(path: &Path) -> bool {
+    path.is_file()
+}
+
+fn find_executable(cmd: &str) -> Option<PathBuf> {
+    let path_var = env::var("PATH").ok()?;
+
+    for dir in split_paths(&path_var) {
+        let candidate = dir.join(cmd);
+
+        if candidate.is_file() && is_executable(&candidate) {
+            return Some(candidate);
+        }
+    }
+
+    None
 }
