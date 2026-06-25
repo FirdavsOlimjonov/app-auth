@@ -7,6 +7,7 @@ use std::io::{self, Write, stderr, stdin, stdout};
 use std::mem::take;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::fs::OpenOptions;
 
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
@@ -99,7 +100,19 @@ fn exec(args: &[&str]) -> ExecOutput {
     match *args {
         [] => ExecOutput::new(),
 
-        [ref head @ .., ">" | "1>" | ">>"  | "1>>" , path] => {
+        [ref head @ .., ">>" | "1>>", path] => {
+            let mut output = exec(head);
+            append_file(path, &take(&mut output.out));
+            output
+        }
+
+        [ref head @ .., "2>>", path] => {
+            let mut output = exec(head);
+            append_file(path, &take(&mut output.err));
+            output
+        }
+
+        [ref head @ .., ">" | "1>", path] => {
             let mut output = exec(head);
             write(path, take(&mut output.out)).ok();
             output
@@ -266,4 +279,14 @@ fn find_executable(cmd: &str) -> Option<PathBuf> {
     }
 
     None
+}
+
+fn append_file(path: &str, data: &[u8]) {
+    if let Ok(mut file) = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+    {
+        let _ = file.write_all(data);
+    }
 }
