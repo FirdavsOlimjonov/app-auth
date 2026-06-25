@@ -99,7 +99,7 @@ fn exec(args: &[&str]) -> ExecOutput {
     match *args {
         [] => ExecOutput::new(),
 
-        [ref head @ .., ">" | "1>", path] => {
+        [ref head @ .., ">" | "1>" | ">>"  | "1>>" , path] => {
             let mut output = exec(head);
             write(path, take(&mut output.out)).ok();
             output
