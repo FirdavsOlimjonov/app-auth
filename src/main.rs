@@ -144,18 +144,38 @@ fn main() {
     fn parse_command(input: &str) -> Vec<String> {
         let mut args = Vec::new();
         let mut current = String::new();
-        let mut in_quotes = false;
+
+        #[derive(PartialEq)]
+        enum QuoteState {
+            None,
+            Single,
+            Double,
+        }
+
+        let mut state = QuoteState::None;
 
         for ch in input.chars() {
             match ch {
-                '\'' => {
-                    in_quotes = !in_quotes;
+                '\'' if state == QuoteState::None => {
+                    state = QuoteState::Single;
                 }
-                ' ' if !in_quotes => {
+                '\'' if state == QuoteState::Single => {
+                    state = QuoteState::None;
+                }
+
+                '"' if state == QuoteState::None => {
+                    state = QuoteState::Double;
+                }
+                '"' if state == QuoteState::Double => {
+                    state = QuoteState::None;
+                }
+
+                ' ' | '\t' if state == QuoteState::None => {
                     if !current.is_empty() {
                         args.push(std::mem::take(&mut current));
                     }
                 }
+
                 _ => current.push(ch),
             }
         }
