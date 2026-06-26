@@ -1,18 +1,31 @@
 use std::env;
 use std::env::{current_dir, set_current_dir, split_paths, var};
+use std::fs::OpenOptions;
 #[warn(unused_imports)]
 use std::fs::{metadata, write};
 #[warn(unused_imports)]
-use std::io::{self, Write, stderr, stdin, stdout};
+use std::io::{self, Write, stderr, stdout};
 use std::mem::take;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::fs::OpenOptions;
 
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
 #[cfg(unix)]
 use std::os::unix::process::CommandExt;
+
+use std::collections::BTreeSet;
+use std::sync::Mutex;
+
+use rustyline::completion::{Completer, Pair};
+use rustyline::error::ReadlineError;
+use rustyline::highlight::Highlighter;
+use rustyline::hint::Hinter;
+use rustyline::validate::Validator;
+use rustyline::{
+    Cmd, ConditionalEventHandler, Editor, Event, EventContext, EventHandler, Helper, KeyCode,
+    KeyEvent, Modifiers, RepeatCount,
+};
 
 #[derive(Debug, PartialEq)]
 struct ExecOutput {
@@ -68,14 +81,178 @@ impl From<std::process::Output> for ExecOutput {
 }
 
 const BUILTINS: [&str; 5] = ["type", "echo", "exit", "pwd", "cd"];
+const COMPLETABLE_BUILTINS: [&str; 2] = ["echo", "exit"];
+
+fn collect_candidates(prefix: &str) -> Vec<String> {
+    let mut names: BTreeSet<String> = BTreeSet::new();
+
+    for cmd in COMPLETABLE_BUILTINS {
+        if cmd.starts_with(prefix) {
+            names.insert(cmd.to_string());
+        }
+    }
+
+    if let Ok(path_var) = env::var("PATH") {
+        for dir in split_paths(&path_var) {
+            let Ok(entries) = std::fs::read_dir(&dir) else {
+                continue;
+            };
+
+            for entry in entries.flatten() {
+                let file_name = entry.file_name();
+                let Some(name) = file_name.to_str() else {
+                    continue;
+                };
+
+                if !name.starts_with(prefix) {
+                    continue;
+                }
+
+                let full_path = entry.path();
+                if full_path.is_file() && is_executable(&full_path) {
+                    names.insert(name.to_string());
+                }
+            }
+        }
+    }
+
+    names.into_iter().collect()
+}
+
+fn longest_common_prefix(names: &[String]) -> String {
+    let Some(first) = names.first() else {
+        return String::new();
+    };
+
+    let mut prefix_len = first.len();
+
+    for name in &names[1..] {
+        let common = first
+            .bytes()
+            .zip(name.bytes())
+            .take_while(|(a, b)| a == b)
+            .count();
+        prefix_len = prefix_len.min(common);
+    }
+
+    first[..prefix_len].to_string()
+}
+
+struct TabCompleteHandler {
+    last_ambiguous_prefix: Mutex<Option<String>>,
+}
+
+impl TabCompleteHandler {
+    fn new() -> Self {
+        Self {
+            last_ambiguous_prefix: Mutex::new(None),
+        }
+    }
+}
+
+impl ConditionalEventHandler for TabCompleteHandler {
+    fn handle(
+        &self,
+        _evt: &Event,
+        _n: RepeatCount,
+        _positive: bool,
+        ctx: &EventContext<'_>,
+    ) -> Option<Cmd> {
+        let line = ctx.line();
+        let pos = ctx.pos();
+        let prefix = &line[..pos];
+
+        if prefix.contains(' ') {
+            *self.last_ambiguous_prefix.lock().unwrap() = None;
+            return None;
+        }
+
+        let candidates = collect_candidates(prefix);
+
+        if candidates.is_empty() {
+            *self.last_ambiguous_prefix.lock().unwrap() = None;
+            ring_bell();
+            return Some(Cmd::Noop);
+        }
+
+        if candidates.len() == 1 {
+            *self.last_ambiguous_prefix.lock().unwrap() = None;
+            let suffix = format!("{} ", &candidates[0][prefix.len()..]);
+            return Some(insert_suffix(&suffix));
+        }
+
+        let common = longest_common_prefix(&candidates);
+
+        if common.len() > prefix.len() {
+            *self.last_ambiguous_prefix.lock().unwrap() = None;
+            let suffix = &common[prefix.len()..];
+            return Some(insert_suffix(suffix));
+        }
+
+        let mut last = self.last_ambiguous_prefix.lock().unwrap();
+
+        if last.as_deref() == Some(prefix) {
+            *last = None;
+            drop(last);
+            print_candidates(&candidates);
+            return Some(Cmd::Repaint);
+        }
+
+        *last = Some(prefix.to_string());
+        drop(last);
+        ring_bell();
+        Some(Cmd::Noop)
+    }
+}
+
+fn ring_bell() {
+    print!("\x07");
+    stdout().flush().ok();
+}
+
+fn insert_suffix(suffix: &str) -> Cmd {
+    Cmd::Insert(1, suffix.to_string())
+}
+
+fn print_candidates(candidates: &[String]) {
+    println!();
+    println!("{}", candidates.join("  "));
+}
+
+struct NoopHelper;
+
+impl Completer for NoopHelper {
+    type Candidate = Pair;
+}
+
+impl Hinter for NoopHelper {
+    type Hint = String;
+}
+
+impl Highlighter for NoopHelper {}
+
+impl Validator for NoopHelper {}
+
+impl Helper for NoopHelper {}
 
 fn main() {
-    loop {
-        print!("$ ");
-        stdout().flush().unwrap();
+    let mut rl = Editor::<NoopHelper, rustyline::history::DefaultHistory>::new()
+        .expect("failed to initialize line editor");
+    rl.set_helper(Some(NoopHelper));
 
-        let mut input = String::new();
-        stdin().read_line(&mut input).unwrap();
+    rl.bind_sequence(
+        KeyEvent(KeyCode::Tab, Modifiers::NONE),
+        EventHandler::Conditional(Box::new(TabCompleteHandler::new())),
+    );
+
+    loop {
+        let readline = rl.readline("$ ");
+
+        let input = match readline {
+            Ok(line) => line,
+            Err(ReadlineError::Eof) | Err(ReadlineError::Interrupted) => break,
+            Err(_) => break,
+        };
 
         let args = split(&input);
 
@@ -89,6 +266,7 @@ fn main() {
 
         stdout().write_all(&out).ok();
         stderr().write_all(&err).ok();
+        stdout().flush().ok();
 
         if exit {
             break;
@@ -282,11 +460,7 @@ fn find_executable(cmd: &str) -> Option<PathBuf> {
 }
 
 fn append_file(path: &str, data: &[u8]) {
-    if let Ok(mut file) = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(path)
-    {
+    if let Ok(mut file) = OpenOptions::new().create(true).append(true).open(path) {
         let _ = file.write_all(data);
     }
 }
